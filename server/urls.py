@@ -18,7 +18,7 @@ from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
 from api import views as api_views
-
+from client import urls as client_urls
 
 router = routers.DefaultRouter()
 router.register(r'todos', api_views.TodoView, 'todo')
@@ -26,5 +26,5 @@ router.register(r'todos', api_views.TodoView, 'todo')
 urlpatterns = [
     path('admin/', admin.site.urls),         
     path('api/', include(router.urls)),
-    re_path('.*', TemplateView.as_view(template_name='index.html')),
+    path('', include(client_urls))
 ]
