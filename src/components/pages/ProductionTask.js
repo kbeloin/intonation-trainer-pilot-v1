@@ -6,6 +6,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container'
 import { withRouter, NavLink } from 'react-router-dom';
+import Recorder from './Recorder.js'
+import Player from './Player.js';
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -36,47 +39,29 @@ const useStyles = makeStyles((theme) => ({
         height: "50%",
         justifyContent:"space-evenly",
         spacing:"0",
-        alignItems:"center",
+        alignItems:"flex-end",
         direction:"column",
         minHeight:"100%"
     }
 }));
 
-const Unit = (props) => {
+const ProdTask = (props) => {
     const classes = useStyles();
   
     return (
       <div className={classes.content}>
         <Paper className={classes.paper}>
-            
-        
             <Container className={classes.container}>
                 <Grid container className={classes.grid}>
-                <figure>
-                    <figcaption>Example:</figcaption>
-                        <audio
-                            controls
-                            src="https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3">
-                                Your browser does not support the
-                                <code>audio</code> element.
-                        </audio>
-                </figure>
-                <figure>
-                    <figcaption>Example:</figcaption>
-                        <audio
-                            controls
-                            src="https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3">
-                                Your browser does not support the
-                                <code>audio</code> element.
-                        </audio>
-                </figure>
-            </Grid>
-                <NavLink className={classes.button} to='/' style={{ textDecoration: 'none' }} key= ''>
-                    <Button variant="outlined">Welcome</Button>
-                </NavLink>
+                    <Player />
+                    <Recorder />
+                </Grid>
+                    <NavLink className={classes.button} to='/' style={{ textDecoration: 'none' }} key= ''>
+                        <Button variant="outlined">Welcome</Button>
+                    </NavLink>
             </Container>
         </Paper>
         </div>
         );
     }
-export default withRouter(Unit)
+export default withRouter(ProdTask)

@@ -6,7 +6,6 @@ html, body {
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: fixed;
     overflow: hidden;
-
 }
 
 .App {
@@ -18,8 +17,10 @@ html, body {
 .user-banner {
     display: flex;
     justify-content: flex-end;
+    margin-right: 3%;
 }
 
 .user-banner div {
-    padding: 2%
+    padding: 1%
+
 }
