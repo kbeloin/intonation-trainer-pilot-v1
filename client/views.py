@@ -15,7 +15,7 @@ class CustomLoginView(LoginView):
 
 @login_required(login_url="login/")
 def index(request, *args, **kwargs):
-    return render(request, 'client/index.html')
+    return render(request, 'index.html')
 
 def redirect_to_home(request):
     # assuming home has an urlconf name of 'home'
