@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Welcome from './components/pages/Welcome'
 import Unit from './components/pages/Unit'
-import { render } from "react-dom";
 import { MemoryRouter } from "react-router-dom"
 import { Route, Switch } from 'react-router-dom'
 

@@ -4,6 +4,9 @@ html, body {
     padding: 0;
     background-color: #dfe1e5;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: fixed;
+    overflow: hidden;
+
 }
 
 .App {
@@ -15,8 +18,8 @@ html, body {
 .user-banner {
     display: flex;
     justify-content: flex-end;
-
 }
+
 .user-banner div {
     padding: 2%
 }

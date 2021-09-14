@@ -13,15 +13,19 @@ const useStyles = makeStyles((theme) => ({
     display: "flex"
   },
     paper: {
-      padding: theme.spacing(2),
-      flexDirection: "column",
-      minWidth: '100vw',
-      minHeight: '80vh',
-      display:"flex"
+        padding: theme.spacing(2),
+        flexDirection: "column",
+        minWidth: '100vw',
+        minHeight: '80vh',
+        display:"flex",
+        elevation: 3,
+        justifyContent:"center",
+        alignItems:"center"
     },
     container: {
         position: 'relative',
-        height: '100%'
+        height: '100%',
+        justifyContent: "center"
     },
     button: {
         position: 'absolute',
@@ -29,7 +33,12 @@ const useStyles = makeStyles((theme) => ({
         right: '0'
     },
     grid: {
-        height: "50%"
+        height: "50%",
+        justifyContent:"space-evenly",
+        spacing:"0",
+        alignItems:"center",
+        direction:"column",
+        minHeight:"100%"
     }
 }));
 
@@ -38,8 +47,20 @@ const Unit = (props) => {
   
     return (
       <div className={classes.content}>
-        <Paper className={classes.paper} elevation='3' justifyContent="center" alignItems="center">
-            <Grid container spacing='0' justifyContent="center" alignItems="center" direction="column" minHeight="100%">
+        <Paper className={classes.paper}>
+            
+        
+            <Container className={classes.container}>
+                <Grid container className={classes.grid}>
+                <figure>
+                    <figcaption>Example:</figcaption>
+                        <audio
+                            controls
+                            src="https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3">
+                                Your browser does not support the
+                                <code>audio</code> element.
+                        </audio>
+                </figure>
                 <figure>
                     <figcaption>Example:</figcaption>
                         <audio
@@ -50,8 +71,6 @@ const Unit = (props) => {
                         </audio>
                 </figure>
             </Grid>
-        
-            <Container className={classes.container} justifyContent="center">
                 <NavLink className={classes.button} to='/' style={{ textDecoration: 'none' }} key= ''>
                     <Button variant="outlined">Welcome</Button>
                 </NavLink>
