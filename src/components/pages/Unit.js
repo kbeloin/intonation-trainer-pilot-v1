@@ -44,7 +44,7 @@ const Unit = (props) => {
                     <figcaption>Example:</figcaption>
                         <audio
                             controls
-                            src="https://intonation-trainer.s3.amazonaws.com/test-audio">
+                            src="https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3">
                                 Your browser does not support the
                                 <code>audio</code> element.
                         </audio>
