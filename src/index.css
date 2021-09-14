@@ -10,5 +10,13 @@ html, body {
     width: 100%;
     height: 100%;
     margin: auto;
+}
 
+.user-banner {
+    display: flex;
+    justify-content: flex-end;
+
+}
+.user-banner div {
+    padding: 2%
 }
