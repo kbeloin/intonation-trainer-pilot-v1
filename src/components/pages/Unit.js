@@ -40,10 +40,17 @@ const Unit = (props) => {
       <div className={classes.content}>
         <Paper className={classes.paper} elevation='3' justifyContent="center" alignItems="center">
             <Grid container spacing='0' justifyContent="center" alignItems="center" direction="column" minHeight="100%">
-                <Typography variant="h1" component="h2" gutterBottom>
-                    Unit 2
-                </Typography>
+                <figure>
+                    <figcaption>Example:</figcaption>
+                        <audio
+                            controls
+                            src="https://intonation-trainer.s3.amazonaws.com/test-audio">
+                                Your browser does not support the
+                                <code>audio</code> element.
+                        </audio>
+                </figure>
             </Grid>
+        
             <Container className={classes.container} justifyContent="center">
                 <NavLink className={classes.button} to='/' style={{ textDecoration: 'none' }} key= ''>
                     <Button variant="outlined">Welcome</Button>
