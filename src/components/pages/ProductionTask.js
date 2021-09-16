@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         minHeight: '80vh',
         display:"flex",
         elevation: 3,
-        justifyContent:"center",
+        
         alignItems:"center"
     },
     container: {
@@ -153,13 +153,16 @@ const ProdTask = (props) => {
         <Paper className={classes.paper}>
             <Container className={classes.container}>
                 <Grid container className={classes.grid}>
-                    <Player />
-                    <Recorder forwardedRef={childRef} sets={setStagedData}/>
-                    
+                    <Grid item>
+                        <Player />
+                    </Grid>
+                    <Grid item>
+                        <Recorder forwardedRef={childRef} sets={setStagedData}/>
+                    </Grid>
+                    <Grid item>
+                        <Button variant="outlined" onClick={handleChange}>Welcome</Button>
+                    </Grid>
                 </Grid>
-                    
-                    <Button variant="outlined" onClick={handleChange}>Welcome</Button>
-                    
             </Container>
         </Paper>
         </div>

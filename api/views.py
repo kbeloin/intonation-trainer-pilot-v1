@@ -114,8 +114,9 @@ class process(APIView):
 
             s = snd.Sound(f.name)
             print(s)
+            return_data = s.to_intensity()
 
-            return HttpResponse(s.to_intensity())
+            return HttpResponse(json.dumps({'data': return_data }))
         return Response('Other response')
 
 class sign_s3(APIView):
