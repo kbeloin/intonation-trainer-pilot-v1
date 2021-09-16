@@ -18,14 +18,12 @@ from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from rest_framework import routers
 from api import views as api_views
-from api import urls as api_urls
 from client import urls as client_urls
 
 router = routers.DefaultRouter()
-# router.register(r'todos', api_views.TodoView, 'todo')
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),         
-    path('api/', include(api_urls)),
-    path('', include(client_urls))
+    path('process/', api_views.process.as_view(), name='Audio'),
+    path('sign_s3/', api_views.sign_s3.as_view(), name='S3'),              
 ]

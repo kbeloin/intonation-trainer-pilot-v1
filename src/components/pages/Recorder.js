@@ -1,3 +1,5 @@
+
+import { useState, useRef } from  'react'
 import { render } from "react-dom";
 import useRecorder from "./useRecorder";
 import axios from "axios";
@@ -5,29 +7,28 @@ import axios from "axios";
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
-const refreshList = (props) => {
-  this.disabled = true;
-  axios
-    // .get("http://localhost:8000/api/todos/")
-    // Because of proxy in package.json, command be shorten as follows:
-    .get("/api/todos/")
-    .then(res => this.setState({ todoList: res.data }))
-    .catch(err => console.log(err));
-};
 
 const Recorder = (props) => {
-  let [audioURL, isRecording, startRecording, stopRecording] = useRecorder();
+  let [audioURL, isRecording, startRecording, stopRecording, rawData] = useRecorder();
+  let audioRef = useRef()
+
+  const audio = audioRef.current
+
+  // const handlestop = props.sets(rawData)
+  
+  const currentAudio = audio ? audio.addEventListener('canplaythrough', (event) => {
+    if (rawData) {props.sets(rawData)};
+    return
+  }) : "NONE";
+
   return (
-    <div className="Recorder">
-      <audio src={audioURL} controls/>
+    <div className="Recorder" id="recorder" ref={props.forwardedRef}>
+      <audio src={audioURL} ref={audioRef} controls/>
       <button onClick={startRecording} disabled={isRecording}>
         start recording
       </button>
       <button onClick={stopRecording} disabled={!isRecording}>
         stop recording
-      </button>
-      <button onClick={refreshList} disabled={!audioURL}>
-        send
       </button>
     </div>
   );
