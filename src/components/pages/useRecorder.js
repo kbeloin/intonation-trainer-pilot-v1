@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 
+
 var options = {
   audioBitsPerSecond: 16000
 }
@@ -32,14 +33,22 @@ const useRecorder = () => {
 
     // Obtain the audio when ready.
     const handleData = e => {
+    console.log(e.data)
     const blob = new Blob([e.data]);
+    const ctx = new AudioContext()
+    
+
     var reader = new FileReader();
     reader.readAsArrayBuffer(blob);
     reader.onloadend = () => {
-      let view = new Int8Array(reader.result)
+      ctx.decodeAudioData(reader.result).then(function(decodedData) {
+        const view = decodedData.getChannelData(0)
+        console.log(decodedData)
+        setRawData(view);
+        setAudioURL(URL.createObjectURL(e.data))//log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
+       });
       
-      setRawData(view);
-      setAudioURL(URL.createObjectURL(e.data))//log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
+      //log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
     }
     
     }; 

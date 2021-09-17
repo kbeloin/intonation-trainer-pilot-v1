@@ -34,9 +34,12 @@ const useStyles = makeStyles((theme) => ({
       display:"flex",
         justifyContent:"space-evenly",
         spacing:"2",
-        
-       
-        
+    },
+
+    chart: {
+      height: "100px",
+      border: "black"
+
     }
 }));
 
@@ -55,17 +58,15 @@ const Recorder = (props) => {
 
   return (
     <div className="Recorder" id="recorder" ref={props.forwardedRef}>
-    <Grid contaimer className={classes.grid}>
-    <Button onClick={startRecording} disabled={isRecording}>
-        start recording
+    <Grid container className={classes.grid}>
+      <audio src={audioURL} ref={audioRef} controls/>
+      <Button onClick={startRecording} disabled={isRecording}>
+        start
       </Button>
       <Button onClick={stopRecording} disabled={!isRecording}>
-        stop recording
+        stop
       </Button>
-      <audio src={audioURL} ref={audioRef} controls/>
-      
-      </Grid>
-      
+      </Grid> 
     </div>
   );
 }

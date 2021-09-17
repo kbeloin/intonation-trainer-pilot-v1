@@ -107,16 +107,20 @@ class process(APIView):
         audio_data = [y for x,y in json.loads(request.data).items()]
         # audio_file = io.BytesIO(request.data.keys())
         temp_file = NamedTemporaryFile(delete=True)
-        print(audio_data)
+        print(len(audio_data))
         with temp_file as f:
-            print(np.asarray(audio_data))
-            write(f.name, 44000, np.asarray(audio_data, dtype='int8'))
+            
+            write(f.name, 44100, np.asarray(audio_data))
 
             s = snd.Sound(f.name)
-            print(s)
-            return_data = s.to_intensity()
 
-            return HttpResponse(json.dumps({'data': return_data }))
+            pitch = s.to_pitch()
+            pitch_values = pitch.selected_array['frequency']
+
+            x,y = (pitch.xs().tolist(), pitch_values.tolist())
+            x_lim, y_lim = (0, pitch.ceiling)
+            
+            return HttpResponse(json.dumps({'data': {'time': x, 'pitch': y, 'x_lim': x_lim, 'y_lim': y_lim}}))
         return Response('Other response')
 
 class sign_s3(APIView):

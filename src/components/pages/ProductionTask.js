@@ -9,6 +9,8 @@ import { withRouter, NavLink } from 'react-router-dom';
 import Recorder from './Recorder.js'
 import Player from './Player.js';
 import axios from "axios";
+import { Scatter} from 'react-chartjs-2'
+import { newChart, updateChart, getData } from './SoundChart.js';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -17,12 +19,11 @@ const useStyles = makeStyles((theme) => ({
   },
     paper: {
         padding: theme.spacing(2),
-        flexDirection: "column",
+        flexDirection: "row",
         minWidth: '100vw',
         minHeight: '80vh',
-        display:"flex",
+        display:"flex-box",
         elevation: 3,
-        
         alignItems:"center"
     },
     container: {
@@ -42,6 +43,16 @@ const useStyles = makeStyles((theme) => ({
         alignItems:"flex-end",
         direction:"column",
         minHeight:"100%"
+    },
+
+    chart: {
+        justifyContent:"space-evenly",
+        spacing:"0",
+        alignItems:"flex-end",
+        direction:"column",
+        minHeight:"40%",
+        marginBottom: "1vh",
+        minWidth:"35vw",
     }
 }));
 
@@ -103,68 +114,98 @@ const getSignedRequest = (file) => {
     xhr.send();
     }
 
-const processData = (data) => {
-    var xhr = new XMLHttpRequest()
-    
 
-    xhr.open("POST", "/api/process/", true);
-    xhr.setRequestHeader("X-CSRFToken", getCSRF());
-    //Send the proper header information along with the request
-    xhr.setRequestHeader("Content-Type", "application/octet-stream");
-
-    
-    xhr.onreadystatechange = function() { // Call a function when the state changes.
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            // Request finished. Do processing here.
-        }
-    }
-    
-    xhr.send(JSON.stringify(data))
-
-}
 
 const ProdTask = (props) => {
     let [src, setCurrentSrc] = useState()
     let [staged, setStagedData] = useState()
+    let [processedData, setProcessedData] = useState(null)
+    let [chartA, setChartA] = useState()
+    let [chartB, setChartB] = useState()
     const classes = useStyles();
-    const childRef = useRef(null);
+    const responseDataRef = useRef(null);
+    const questionDataRef = useRef(null);
+    
     
 
     const handleChange = () => {
         let audio = staged
-        console.log(staged)
+        
         // document.getElementById("recorder").currentSrc
         setCurrentSrc(staged)     // console.log(src)
     }
     
+    const processData = (data) => {
+        console.log(staged)
+        document.getElementById('responseData').remove()
+        const newCanvas = document.createElement('canvas')
+        newCanvas.setAttribute('id', 'responseData')
+        
+        document.getElementById('responseDataContainer').append(newCanvas)
+
+        var xhr = new XMLHttpRequest()
+        xhr.open("POST", "/api/process/", true);
+        xhr.setRequestHeader("X-CSRFToken", getCSRF());
+        //Send the proper header information along with the request
+        xhr.setRequestHeader("Content-Type", "application/octet-stream");
+    
+        
+        xhr.onreadystatechange = function() { // Call a function when the state changes.
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                newChart(newCanvas, getData(response))
+                setProcessedData(response)
+                
+            }
+        }
+        
+        xhr.send(JSON.stringify(data))
+    
+    }
     // useEffect(() => {
     //     // Update the document title using the browser API
         
     //     src === undefined ? console.log("None") : processData(src)},[src]);
     
     useEffect(() => {
-        // Update the document title using the browser API
-        
+        // Update the document title using the browser AP
         src === undefined ? console.log("None") : processData(src)},[src]);
+
+    useEffect(() => {
+            // Update the document title using the browser API
+        
+        console.log(processedData)
+    },[processedData]);
+
+    useEffect(() => {
+        setChartA(newChart(questionDataRef.current, []))
+        setChartB(newChart(responseDataRef.current, []))
+        // Update the document title using the browser AP
+},[]);
+    
 
     
     return (
-      <div className={classes.content}>
-        <Paper className={classes.paper}>
-            <Container className={classes.container}>
+        <div className={classes.content}>
+            <Paper className={classes.paper}>
                 <Grid container className={classes.grid}>
                     <Grid item>
-                        <Player />
+                        <Paper className={classes.chart}>  
+                            <canvas id="questionData" ref={questionDataRef}></canvas>
+                        </Paper>
+                        <Player/>
                     </Grid>
                     <Grid item>
-                        <Recorder forwardedRef={childRef} sets={setStagedData}/>
+                        <Paper id="responseDataContainer" className={classes.chart}>
+                            <canvas id="responseData" ref={responseDataRef}></canvas>
+                        </Paper>
+                        <Recorder sets={setStagedData}/>
                     </Grid>
                     <Grid item>
                         <Button variant="outlined" onClick={handleChange}>Welcome</Button>
                     </Grid>
                 </Grid>
-            </Container>
-        </Paper>
+            </Paper>
         </div>
         );
     }

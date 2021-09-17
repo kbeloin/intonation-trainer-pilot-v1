@@ -5,7 +5,7 @@ html, body {
     background-color: #dfe1e5;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: fixed;
-    overflow: hidden;
+    
 }
 
 .App {
@@ -21,8 +21,14 @@ html, body {
 }
 
 .user-banner div {
-    padding: 1%
+    padding: 1%;
 
+}
+
+#canvas {
+    min-width: 100%;
+    min-height: 100%;
+    position: relative;
 }
 
 
