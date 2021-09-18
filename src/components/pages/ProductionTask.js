@@ -78,7 +78,7 @@ const ProductionTaskTemplate = (props) => {
             toggleLoading(false)
          })
     }
-
+    
     const nextTask = () => {
 
         let response = { 'taskData': taskData, 'responseData': processedData }

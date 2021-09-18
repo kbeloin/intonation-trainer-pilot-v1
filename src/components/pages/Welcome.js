@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import {withRouter, NavLink} from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import PerceptionTaskTemplate from './PerceptiontionTask' 
-import PerceptionTaskTemplate from './ProductiontionTask' 
+import ProductionTaskTemplate from './ProductiontionTask' 
 
 const useStyles = makeStyles((theme) => ({
   content: {
