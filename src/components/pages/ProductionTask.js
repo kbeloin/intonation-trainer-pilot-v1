@@ -4,14 +4,14 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
+import { CircularProgress } from '@mui/material';
 import { withRouter, NavLink } from 'react-router-dom';
 import Recorder from './Recorder.js'
 import Player from './Player.js';
 import axios from 'axios';
 import { processAudioData } from '../utils/processAudio.js'
 import { submitResponse } from '../utils/submitResponse.js'
-import { getPitchScatterData, resetCanvas, newPitchChart, newCanvas } from './SoundChart.js';
+import { getPitchScatterData, resetCanvas, newCanvas, PitchChart } from './SoundChart.js';
 import { getCSRF } from '../utils/csrfHelper'
 
 const useStyles = makeStyles((theme) => ({
@@ -60,8 +60,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ProdTask = (props) => {
     const classes = useStyles();
-    let [processedData, setProcessedData] = useState(null)
-    let [taskData, setTaskData] = useState()
+    let [processedData, setProcessedData] = useState({})
+    let [taskData, setTaskData] = useState(true)
+    let [isLoading, toggleLoading] = useState(false)
 
     let [chartA, setChartA] = useState()
     let [chartB, setChartB] = useState()
@@ -70,11 +71,13 @@ const ProdTask = (props) => {
     let questionDataRef = useRef(null);
     
     let handleAudioChange = (data) => {
-        let newCanvas = resetCanvas('response-data', 'response-data-container', chartB)
+        // let newCanvas = resetCanvas('response-data', 'response-data-container', chartB)
+        console.log(isLoading)
         processAudioData(data).then((response) => { 
             let pitchData = getPitchScatterData(response.data)
-            setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
+            // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
+            toggleLoading(false)
          })
     }
 
@@ -90,11 +93,12 @@ const ProdTask = (props) => {
             console.log("No changes recorded") 
         } else {
         console.log("Processed data changed:", processedData)}
+        
         },[processedData]);
 
     useEffect(() => {
-        setChartA(newPitchChart(questionDataRef.current, []))
-        setChartB(newPitchChart(responseDataRef.current, []))
+        // setChartA(newPitchChart(questionDataRef.current, []))
+        // setChartB(newPitchChart(responseDataRef.current, []))
     },[]);
 
     return (
@@ -103,18 +107,18 @@ const ProdTask = (props) => {
                 <Grid container className={classes.grid}>
                     <Grid item>
                         <Paper id="question-data-container" className={classes.chart}>  
-                            <canvas id="question-data" ref={questionDataRef}></canvas>
+                            <PitchChart sets={setChartA} data={[]}/>
                         </Paper>
                         <Player url={"https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3"}></Player>
                     </Grid>
                     <Grid item>
                         <Paper id="response-data-container" className={classes.chart}>
-                            <canvas id="response-data" ref={responseDataRef}></canvas>
+                            {isLoading ? <CircularProgress /> : <PitchChart sets={setChartB} data={processedData}/>}
                         </Paper>
-                        <Recorder sets={handleAudioChange} />
+                        <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
                     </Grid>
                     <Grid item>
-                        <Button variant="outlined" onClick={nextTask}>Welcome</Button>
+                        <Button variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
                     </Grid>
                 </Grid>
             </Paper>

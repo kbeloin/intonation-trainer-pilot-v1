@@ -48,9 +48,9 @@ class process(APIView):
             custom_audio_convert.write(f.name, 44100, np.asarray(audio_data))
             
             data = audio_utils.analyze_pitch(f)
-            upload_response = b2_util.upload_file(f)
+            # upload_response = b2_util.upload_file(f)
 
-            print(upload_response)
+            # print(upload_response)
 
             return HttpResponse(data)
 
@@ -87,7 +87,7 @@ class getResponseSet(APIView):
         - get response list, return most recent incomplete task. 
         '''
 
-        
+
 
     # def put(self, request):
     #     '''Handle when user submits question'''

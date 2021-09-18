@@ -21,36 +21,34 @@ export const getPitchScatterData = (processedData) => {
     return data
 }
 
-export const resetCanvas = (id, container_id, chart) => {
-    chart.destroy()
-    document.getElementById(id).remove()
-    const newCanvas = document.createElement('canvas')
-    newCanvas.setAttribute('id', id)
-    document.getElementById(container_id).append(newCanvas)
-    return newCanvas
-}
-
-export const newPitchChart = ( element, data ) => {
-    let ctx = element.getContext('2d')
+export const PitchChart = ( props ) => {
+    let chartRef = useRef()
     
-    let myChart = new Chart(ctx, {
+    useEffect(() => {
+        let ctx = chartRef.current.getContext('2d')
+
+        let myChart = new Chart(ctx, {
             type: 'scatter',
             data: {
                 datasets: [{
                     label: 'Pitch Frequency',
-                    data: data,
+                    data: props.data,
                     borderWidth: 1,
                     backgroundColor: 'rgb(255, 99, 132)'
-                }]
-            },
-            options: {
-                scales: {
-                    y: { },
-                    x: { }
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { },
+                        x: { }
+                    }
                 }
-            }
-        });
-    return myChart
+            });
+        },[])
+
+    return (
+        <canvas id="question-data" ref={chartRef}></canvas>
+    )
 }
 
 export const updateChart = (chart, data) => {
@@ -59,4 +57,4 @@ export const updateChart = (chart, data) => {
     chart.update()
 }
 
-export default newPitchChart
+export default PitchChart

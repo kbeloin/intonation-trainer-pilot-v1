@@ -25,5 +25,5 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('process/', api_views.process.as_view(), name='Audio'),
-    path('sign_s3/', api_views.sign_s3.as_view(), name='S3'),              
+    path('get-responses/', api_views.sign_s3.as_view(), name='Responses'),              
 ]
