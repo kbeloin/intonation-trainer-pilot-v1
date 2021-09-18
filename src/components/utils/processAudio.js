@@ -23,19 +23,19 @@ export const processAudioData = async (data) => {
     return response
 }
 
-export const processAudioData2 = async (data) => {
-    const response = await axios({
-        method: "post",
-        url: "/api/process/",
-        data: data,
-        headers: {"Content-Type": "application/octet-stream"},
-        transformRequest: [(data) => {
-            return JSON.stringify(data);
-        }],
-        transformResponse: [(data) => {
+export const getPitchScatterData = (processedData) => {
+    
+    let data = processedData['x_y'] || []
+    for (let i = 0; i < data.length; i++) {
+        if (data[i]['x'] === 0) {
+            data[i]['x'] = NaN;
+        }
+        if (data[i]['y'] === 0) {
+            data[i]['y'] = NaN;
+        }
+      }
 
-            return JSON.parse(data);
-        }]
-    });
-    return response
+    return data
 }
+
+export default processAudioData

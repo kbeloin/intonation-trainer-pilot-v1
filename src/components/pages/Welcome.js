@@ -61,7 +61,7 @@ const Welcome = (props) => {
                 </Typography>
             </Grid>
             <Container className={classes.container}>
-              <NavLink className={classes.button} to='/2' style={{ textDecoration: 'none' }} key= ''>
+              <NavLink className={classes.button} to='/production-task' style={{ textDecoration: 'none' }} key= ''>
                 <Button variant="outlined">Enter</Button>
               </NavLink>
             </Container>

@@ -1,17 +1,14 @@
 
-import { useState, useRef, useEffect } from  'react'
-import { render } from "react-dom";
+import { useEffect } from  'react'
 import useRecorder from "../utils/useRecorder";
-import axios from "axios";
-import { Button, Container, Grid } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
-
+import { Button, Grid } from '@material-ui/core'
 
 const Recorder = (props) => {
   let [audioURL, isRecording, startRecording, stopRecording, rawData] = useRecorder();
   
   useEffect(() => {
     if (rawData) {
+      console.log("Raw data ready.")
       props.sets(rawData)
     } else console.log("No current audio.");
   }, [rawData])
@@ -30,4 +27,5 @@ const Recorder = (props) => {
     </div>
   );
 }
+
 export default Recorder;

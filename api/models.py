@@ -45,6 +45,7 @@ class Activity(models.Model):
 
 class Task(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.DO_NOTHING)
+    attempts = models.IntegerField(default=2)
     data = models.JSONField()
 
 

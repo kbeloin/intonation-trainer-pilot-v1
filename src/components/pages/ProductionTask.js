@@ -6,13 +6,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress } from '@mui/material';
 import { withRouter, NavLink } from 'react-router-dom';
-import Recorder from './Recorder.js'
-import Player from './Player.js';
-import axios from 'axios';
-import { processAudioData } from '../utils/processAudio.js'
-import { submitResponse } from '../utils/submitResponse.js'
-import { getPitchScatterData, resetCanvas, newCanvas, PitchChart } from './SoundChart.js';
-import { getCSRF } from '../utils/csrfHelper'
+import Recorder from '../elements/Recorder'
+import Player from '../elements/Player';
+import { processAudioData, getPitchScatterData } from '../utils/processAudio.js'
+import { submitResponse } from '../utils/responseHelper'
+import { PitchChart } from '../elements/AudioCharts';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -48,9 +46,9 @@ const useStyles = makeStyles((theme) => ({
     },
 
     chart: {
-        justifyContent:"space-evenly",
-        spacing:"0",
-        alignItems:"flex-end",
+        display: 'flex',
+        justifyContent:"center",
+        alignItems:"center",
         direction:"column",
         minHeight:"40%",
         marginBottom: "1vh",
@@ -58,11 +56,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ProdTask = (props) => {
+const ProductionTaskTemplate = (props) => {
     const classes = useStyles();
     let [processedData, setProcessedData] = useState({})
     let [taskData, setTaskData] = useState(true)
-    let [isLoading, toggleLoading] = useState(false)
+    let [isLoading, toggleLoading] = useState(true)
 
     let [chartA, setChartA] = useState()
     let [chartB, setChartB] = useState()
@@ -81,7 +79,7 @@ const ProdTask = (props) => {
          })
     }
 
-    let nextTask = () => {
+    const nextTask = () => {
 
         let response = { 'taskData': taskData, 'responseData': processedData }
         submitResponse()
@@ -89,17 +87,13 @@ const ProdTask = (props) => {
 
     useEffect(() => {
         // Update the document title using the browser API (next action... taskType determines the element to show)
-        if (processedData === null) { 
+        if (processedData === null) {
+            
             console.log("No changes recorded") 
         } else {
         console.log("Processed data changed:", processedData)}
         
         },[processedData]);
-
-    useEffect(() => {
-        // setChartA(newPitchChart(questionDataRef.current, []))
-        // setChartB(newPitchChart(responseDataRef.current, []))
-    },[]);
 
     return (
         <div className={classes.content}>
@@ -107,16 +101,16 @@ const ProdTask = (props) => {
                 <Grid container className={classes.grid}>
                     <Grid item>
                         <Paper id="question-data-container" className={classes.chart}>  
-                            <PitchChart sets={setChartA} data={[]}/>
+                            <PitchChart data={[]}/>
                         </Paper>
                         <Player url={"https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3"}></Player>
                     </Grid>
-                    <Grid item>
-                        <Paper id="response-data-container" className={classes.chart}>
-                            {isLoading ? <CircularProgress /> : <PitchChart sets={setChartB} data={processedData}/>}
-                        </Paper>
-                        <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
-                    </Grid>
+                        <Grid item>
+                            <Paper id="response-data-container" className={classes.chart} >
+                                {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
+                            </Paper>
+                            <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
+                        </Grid>
                     <Grid item>
                         <Button variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
                     </Grid>
@@ -126,4 +120,4 @@ const ProdTask = (props) => {
         );
     }
 
-export default withRouter(ProdTask)
+export default withRouter(ProductionTaskTemplate)

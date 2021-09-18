@@ -16,6 +16,7 @@ import base64
 import datetime
 from .parsers import AudioParser
 from .tools import audio_utils, custom_audio_convert, b2_util
+import time
 
 
 
@@ -48,6 +49,7 @@ class process(APIView):
             custom_audio_convert.write(f.name, 44100, np.asarray(audio_data))
             
             data = audio_utils.analyze_pitch(f)
+            time.sleep(3)
             # upload_response = b2_util.upload_file(f)
 
             # print(upload_response)
@@ -81,6 +83,7 @@ class getResponseSet(APIView):
     create_field = None
 
     def post(self, request):
+        
         '''Handle when a user begins a new experiment. Takes user + experiment id as input:
         Returns:
         - if no responses related to user -> create response set.
