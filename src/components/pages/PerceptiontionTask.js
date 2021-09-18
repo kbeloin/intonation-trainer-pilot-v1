@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ProductionTaskTemplate = (props) => {
+const PerceptionTaskTemplate = (props) => {
     const classes = useStyles();
     let [processedData, setProcessedData] = useState({})
     let [taskData, setTaskData] = useState(true)
@@ -80,7 +80,6 @@ const ProductionTaskTemplate = (props) => {
     }
 
     const nextTask = () => {
-
         let response = { 'taskData': taskData, 'responseData': processedData }
         submitResponse()
     }

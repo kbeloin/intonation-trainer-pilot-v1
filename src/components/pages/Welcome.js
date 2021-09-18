@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {withRouter, NavLink} from 'react-router-dom'
 import Container from '@material-ui/core/Container'
+import PerceptionTaskTemplate from './PerceptiontionTask' 
+import PerceptionTaskTemplate from './ProductiontionTask' 
 
 const useStyles = makeStyles((theme) => ({
   content: {

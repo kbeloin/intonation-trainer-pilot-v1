@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Welcome = (props) => {
+const End = (props) => {
 
   const CreateTrial = (props) => {
 
