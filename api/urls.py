@@ -22,8 +22,7 @@ from client import urls as client_urls
 
 router = routers.DefaultRouter()
 
-
 urlpatterns = [
-    path('process/', api_views.process.as_view(), name='Audio'),
+    path('process/', api_views.ProcessAudio.as_view(), name='Audio'),
     path('get-responses/', api_views.sign_s3.as_view(), name='Responses'),              
 ]

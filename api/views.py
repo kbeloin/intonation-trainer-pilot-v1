@@ -5,7 +5,7 @@ import requests
 from rest_framework import viewsets          # add this
 from .serializers import TodoSerializer      # add this
 from rest_framework.views import APIView
-from .models import Experiment, Todo
+from .models import Experiment, Todo, Task
 from django.views import View
 from rest_framework.response import Response
 from django.http import HttpResponse, HttpResponseNotFound
@@ -36,7 +36,7 @@ class Assets(View):
         else:
             return HttpResponseNotFound()
 
-class process(APIView):
+class ProcessAudio(APIView):
     model = None
     create_field = None
     parser_classes = [AudioParser]
@@ -63,7 +63,7 @@ class sign_s3(APIView):
     def get(self, request):
         print(request.data)
 
-class newResponse(APIView):
+class NewResponse(APIView):
     model = Response
     create_field = None
 
@@ -78,9 +78,10 @@ class newResponse(APIView):
     #     requestData = json.loads(request.data)
     #     response = Response(experiment=requestData['response_id'])
 
-class getResponseSet(APIView):
-    model = None
+class GetResponseSet(APIView):
+    model = Response
     create_field = None
+    queryset = Task.objects.all()              # add this
 
     def post(self, request):
         
@@ -89,6 +90,7 @@ class getResponseSet(APIView):
         - if no responses related to user -> create response set.
         - get response list, return most recent incomplete task. 
         '''
+        
 
 
 
