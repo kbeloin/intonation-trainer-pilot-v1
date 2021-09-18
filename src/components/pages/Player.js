@@ -1,11 +1,13 @@
 import React from 'react'
 
-export default function Player() {
+const Player = (url) => {
     return (
         <div className="Player" style={{marginRight: "100px"}}>
             <audio
                 controls
-                src="https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3" />
+                src={url}/>
         </div>
     )
 }
+
+export default Player

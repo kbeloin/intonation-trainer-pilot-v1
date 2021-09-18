@@ -6,14 +6,16 @@ var options = {
   audioBitsPerSecond: 16000
 }
 
-var chunks = []
 
+const ctx = new AudioContext();
+const reader = new FileReader();
 
 const useRecorder = () => {
-  const [audioURL, setAudioURL] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
-  const [recorder, setRecorder] = useState(null);
-  const [rawData, setRawData] = useState(null)
+const [audioURL, setAudioURL] = useState("");
+const [isRecording, setIsRecording] = useState(false);
+const [recorder, setRecorder] = useState(null);
+const [rawData, setRawData] = useState(null)
+  
 
   useEffect(() => {
     // Lazily obtain recorder first time we're recording.
@@ -33,30 +35,21 @@ const useRecorder = () => {
 
     // Obtain the audio when ready.
     const handleData = e => {
-    console.log(e.data)
-    const blob = new Blob([e.data]);
-    const ctx = new AudioContext()
-    
+      // const blob = new Blob([e.data]);
+      let ctx = new AudioContext();
+      let reader = new FileReader();
 
-    var reader = new FileReader();
-    reader.readAsArrayBuffer(blob);
-    reader.onloadend = () => {
-      ctx.decodeAudioData(reader.result).then(function(decodedData) {
-        const view = decodedData.getChannelData(0)
-        console.log(decodedData)
-        setRawData(view);
-        setAudioURL(URL.createObjectURL(e.data))//log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
-       });
-      
-      //log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
+      reader.readAsArrayBuffer(e.data);
+      reader.onloadend = () => {
+        console.log('data loaded')
+        ctx.decodeAudioData(reader.result).then(function(decodedData) {
+          console.log(decodedData)
+          const view = decodedData.getChannelData(0) //
+          setRawData(view); // This might be done by 
+          setAudioURL(URL.createObjectURL(e.data))//log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
+       });  
     }
-    
     }; 
-      
-     // Trying to set the media type here so it matches with upload
-    
-    
-    // readyState will be 2
 
     recorder.addEventListener("dataavailable", handleData);
     return () => recorder.removeEventListener("dataavailable", handleData);

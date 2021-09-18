@@ -3,48 +3,37 @@ import { Chart, registerables } from 'chart.js'
 
 Chart.register(...registerables);
 
-export const getData = (processedData) => {
-    const data = processedData['data'] || []
-    const time = data['time']
-    const pitch = data['pitch']
-    const pData = time.map((x, i) => ({ x, y: pitch[i] }))
-    
-    console.log(pData)
-    
-    return pData
-}
+const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
+const down = (ctx, value) => ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
 
-
-const getConfig = () => {  
-    const config = {
-        type: 'scatter',
-        datasets: [],
-        options: {
-          scales: {
-            x: {
-              grid: {
-                tickColor: 'red'
-              },
-              ticks: {
-                color: 'blue',
-              }
-            }
-          }
+export const getPitchScatterData = (processedData) => {
+    
+    let data = processedData['x_y'] || []
+    for (let i = 0; i < data.length; i++) {
+        if (data[i]['x'] === 0) {
+            data[i]['x'] = NaN;
         }
-      };
-    return config
+        if (data[i]['y'] === 0) {
+            data[i]['y'] = NaN;
+        }
+      }
+
+    return data
 }
 
-export const createChart = (parent) => {
-    const chart = document.createElement('canvas');
-    chart.setAttribute("id", "Chart");
-    parent.appendChild(chart)
-    return chart
+export const resetCanvas = (id, container_id, chart) => {
+    chart.destroy()
+    document.getElementById(id).remove()
+    const newCanvas = document.createElement('canvas')
+    newCanvas.setAttribute('id', id)
+    document.getElementById(container_id).append(newCanvas)
+    return newCanvas
 }
 
-export const newChart = ( element, data ) => {
-    var ctx = element.getContext('2d')
-    const myChart = new Chart(ctx, {
+export const newPitchChart = ( element, data ) => {
+    let ctx = element.getContext('2d')
+    
+    let myChart = new Chart(ctx, {
             type: 'scatter',
             data: {
                 datasets: [{
@@ -65,17 +54,9 @@ export const newChart = ( element, data ) => {
 }
 
 export const updateChart = (chart, data) => {
-    const processedData = getData(data)
-    console.log(processedData)
-    console.log(chart)
+    const processedData = getPitchScatterData(data)
     chart.data.datasets.data = data
     chart.update()
-    
 }
 
-
-// export const updateChart = () => {
-
-// }
-
-export default newChart
+export default newPitchChart

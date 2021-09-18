@@ -42,6 +42,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const createTrial = (props) => {
+  // When the user selects Enter, experiement begins. 
+  // 1. Trial is created
+  // 2. Responses are intialized
+  
+}
+
 const Welcome = (props) => {
     const classes = useStyles();
   
