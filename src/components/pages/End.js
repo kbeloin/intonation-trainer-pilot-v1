@@ -74,5 +74,5 @@ const End = (props) => {
         );
     }
 
-export default withRouter(Welcome);
+export default withRouter(End);
 

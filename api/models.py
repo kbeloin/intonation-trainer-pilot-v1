@@ -29,9 +29,16 @@ class Experiment(models.Model):
     def _str_(self):
         return self.title
 
+class Task(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.DO_NOTHING)
+    attempts = models.IntegerField(default=2)
+    data = models.JSONField()
+
+
 class Response(models.Model):
     user = models.ForeignKey(User, unique=True, on_delete=models.CASCADE, null=True, blank=True)
-    experiment = models.ForeignKey(Experiment, on_delete=models.DO_NOTHING)
+    experiment = models.ForeignKey(Experiment, on_delete=models.DO_NOTHING,  null=True, blank=True)
+    task = models.ForeignKey(Task, on_delete=models.DO_NOTHING, null=True, blank=True)
     complete = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(auto_now_add=False, null=True, blank=True)

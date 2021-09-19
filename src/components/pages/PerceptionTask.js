@@ -119,4 +119,4 @@ const PerceptionTaskTemplate = (props) => {
         );
     }
 
-export default withRouter(ProductionTaskTemplate)
+export default withRouter(PerceptionTaskTemplate)

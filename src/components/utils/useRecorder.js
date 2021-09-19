@@ -48,9 +48,11 @@ const [rawData, setRawData] = useState(null)
           setRawData(view); // This might be done by 
           setAudioURL(URL.createObjectURL(e.data))//log of base64data is "data:audio/ogg; codecs=opus;base64,GkX..."
        });  
-    }
+      }
     }; 
-
+    
+new File()
+    const options = {type: audioFile.type}
     recorder.addEventListener("dataavailable", handleData);
     return () => recorder.removeEventListener("dataavailable", handleData);
   }, [recorder, isRecording]);

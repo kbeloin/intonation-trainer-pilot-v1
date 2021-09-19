@@ -17,6 +17,9 @@ import datetime
 from .parsers import AudioParser
 from .tools import audio_utils, custom_audio_convert, b2_util
 import time
+import boto3
+from botocore.exceptions import ClientError
+import logging
 
 
 
@@ -49,10 +52,10 @@ class ProcessAudio(APIView):
             custom_audio_convert.write(f.name, 44100, np.asarray(audio_data))
             
             data = audio_utils.analyze_pitch(f)
-            time.sleep(3)
-            # upload_response = b2_util.upload_file(f)
-
-            # print(upload_response)
+            # time.sleep(3)
+            upload_response = upload_file(f)
+            print(request.user)
+            print(upload_response)
 
             return HttpResponse(data)
 
@@ -91,7 +94,7 @@ class GetResponseSet(APIView):
         - get response list, return most recent incomplete task. 
         '''
         
-
+        print(request.user)
 
 
     # def put(self, request):
@@ -100,6 +103,26 @@ class GetResponseSet(APIView):
     #     response = Response(experiment=requestData['response_id'])
 
 
+def upload_file(file_name, object_name=None):
+    """Upload a file to an S3 bucket
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = os.path.basename(file_name.name)
+
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_file(file_name.name, 'intonation-trainer', 'pilot-reponse-data/' + object_name + '.wav')
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
 
 
 # Enter experiment -> get all tasks related to experiment -> create all responses for that task -> return first task without response

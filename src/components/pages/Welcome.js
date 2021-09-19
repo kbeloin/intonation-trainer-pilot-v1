@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {withRouter, NavLink} from 'react-router-dom'
+import { withRouter, NavLink } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
-import PerceptionTaskTemplate from './PerceptiontionTask' 
-import ProductionTaskTemplate from './ProductiontionTask' 
+import { getResponses } from '../utils/responseHelper';
+import PerceptionTaskTemplate from './PerceptionTask' 
+import ProductionTaskTemplate from './ProductionTask' 
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -44,10 +45,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 const Welcome = (props) => {
+  const [currentTask, setCurrentTask] = useState('/')
 
-  const CreateTrial = (props) => {
+  const taskRef = useRef()
+
+  const createTrial = (props) => {
+    getResponses().then((response) => {console.log(response)});
+    return 'production-task'
 
     // When the user selects Enter, experiement begins. 
     // 1. Trial is created
@@ -57,6 +62,13 @@ const Welcome = (props) => {
   
   // Entry point: 
     const classes = useStyles();
+
+    useEffect(() =>{
+      const nav = taskRef.current.setAttribute('href', '/production-task')
+      console.log(nav)
+      setCurrentTask('/production-task')
+      
+    }, [])
   
     return (
       <div className={classes.content}>
@@ -67,7 +79,7 @@ const Welcome = (props) => {
                 </Typography>
             </Grid>
             <Container className={classes.container}>
-              <NavLink className={classes.button} to='/production-task' style={{ textDecoration: 'none' }} key= ''>
+              <NavLink className={classes.button} ref={taskRef} to={currentTask} style={{ textDecoration: 'none' }} key= ''>
                 <Button variant="outlined">Enter</Button>
               </NavLink>
             </Container>

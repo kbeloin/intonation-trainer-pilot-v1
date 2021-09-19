@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Welcome from './components/pages/Welcome'
-import ProductionTaskTemplate from './components/pages/PerceptiontionTask'
+import PerceptionTaskTemplate from './components/pages/PerceptionTask'
+import ProductionTaskTemplate from './components/pages/ProductionTask'
+import End from './components/pages/End'
 import { MemoryRouter } from "react-router-dom"
 import { Route, Switch } from 'react-router-dom'
 
