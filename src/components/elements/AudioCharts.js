@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Chart, registerables } from 'chart.js'
 
+
 Chart.register(...registerables);
 
 export const PitchChart = ( props ) => {

@@ -1,25 +1,28 @@
 # todo/serializers.py
 from rest_framework import serializers # This is important
-from .models import Activity, Response, Todo, AudioFile
+from .models import Activities, Responses, Experiment, Tasks
 from typing import Any
 from django.db import models
 
-class TodoSerializer(serializers.ModelSerializer):
+class ExperimentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Todo
-        fields = ('id', 'title', 'description', 'completed')
+        model = Experiment
+        fields = ('id', 'title', 'code')
 
-class AudioDataSerializer(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AudioFile
-        fields = ('id', 'experiment', 'raw_audio', 'pitch_array', 'public_url')
+        model = Activities
+        fields = ('id', 'experiement', 'type', 'attempts', 'config')
 
 class ResponseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Response
-        fields = ('id', 'user', 'experiment', 'complete', 'created', 'started', 'completed', 'userInput')
+        model = Responses
+        fields = ('id', 'user', 'experiment', 'task', 'complete', 'created', 'started', 'completed', 'data')
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Activity
-        fields = ('id', 'user', 'type', 'created')
+        model = Activities
+        fields = ('id', 'title', 'code')
+
+
+

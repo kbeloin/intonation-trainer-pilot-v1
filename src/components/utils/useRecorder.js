@@ -50,9 +50,6 @@ const [rawData, setRawData] = useState(null)
        });  
       }
     }; 
-    
-new File()
-    const options = {type: audioFile.type}
     recorder.addEventListener("dataavailable", handleData);
     return () => recorder.removeEventListener("dataavailable", handleData);
   }, [recorder, isRecording]);

@@ -13,7 +13,7 @@ export default function App() {
         <MemoryRouter>
           <Switch>
             <Route exact path="/" component={Welcome} />
-            <Route path="/production-task" component={ProductionTaskTemplate} />
+            <Route path="/production-matching" component={ProductionTaskTemplate} />
             <Route path="/perception-task" component={PerceptionTaskTemplate} />
             <Route exact path="/done" component={End} />
           </Switch>

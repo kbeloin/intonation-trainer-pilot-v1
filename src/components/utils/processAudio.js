@@ -11,11 +11,9 @@ export const processAudioData = async (data) => {
         data: data,
         headers: {"Content-Type": "application/octet-stream"},
         transformRequest: [(data) => {
-            console.log("hello from transform")
             return JSON.stringify(data);
         }],
         transformResponse: [(data) => {
-            console.log("hello from response")
             return JSON.parse(data);
         }]
     });
