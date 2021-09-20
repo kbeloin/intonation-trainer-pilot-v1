@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress } from '@mui/material';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import Recorder from '../elements/Recorder'
 import Player from '../elements/Player';
 import { processAudioData, getPitchScatterData } from '../utils/processAudio.js'
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         flexDirection: "row",
         minWidth: '100vw',
-        minHeight: '80vh',
+        minHeight: '85vh',
         display:"flex-box",
         elevation: 3,
         alignItems:"center"
@@ -57,15 +57,20 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const ProductionTaskTemplate = (props) => {
+const ProductionReadingTaskTemplate = (props) => {
     const classes = useStyles();
     let [processedData, setProcessedData] = useState(null)
     let [currentTask, setTask] = useState(null)
     let [isLoading, toggleLoading] = useState(false)
+    let history = useHistory()
     
     let handleAudioChange = (data) => {
+        const audio = data
+        const response_id = currentTask.response_id
+
+        const requestData = {"audio":audio, "response_id":response_id}
         // let newCanvas = resetCanvas('response-data', 'response-data-container', chartB)
-        processAudioData(data).then((response) => { 
+        processAudioData(requestData).then((response) => { 
             let pitchData = getPitchScatterData(response.data)
             // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
@@ -74,24 +79,36 @@ const ProductionTaskTemplate = (props) => {
     }
     
     const nextTask = () => {
-        let response = { 'response_id': currentTask.response_id, 'responseData': processedData }
-        submitResponse(response).then((res) => console.log(res))
-    }
+        let request = { 'response_id': currentTask.response_id, 'responseData': processedData }
+        submitResponse(request).then((response) => {
+            
+
+                    const data = response.data
+
+                    console.log(data)
+                    history.push(`/`)
+                    
+
+                  ;
+              })
+            }
 
     useEffect(() => {
         // Update the document title using the browser API (next action... taskType determines the element to show)
         if (processedData === null) {
-            
-            console.log("No changes recorded") 
+            getResponses().then((data)=>setTask(data.data))
         } else {
 
-        console.log("Processed data changed:", processedData)}
+        console.log("Processed data changed:", processedData)
         getResponses().then((data)=>
         {
-            console.log(data)
-            setTask(data.data)
-        }
+            console.log(currentTask.task_id)
+            console.log(data.data.task_id)
+            currentTask.task_id !== data.data.task_id ? nextTask(): setTask(data.data)
+            // setTask(data.data)
+            }
         )
+        }
 
 
         },[processedData]);
@@ -121,4 +138,4 @@ const ProductionTaskTemplate = (props) => {
         );
     }
 
-export default withRouter(ProductionTaskTemplate)
+export default withRouter(ProductionReadingTaskTemplate)

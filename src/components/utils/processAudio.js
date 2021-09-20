@@ -17,7 +17,6 @@ export const processAudioData = async (data) => {
             return JSON.parse(data);
         }]
     });
-    console.log("Asychronous response")
     return response
 }
 

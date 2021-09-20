@@ -20,13 +20,17 @@ import boto3
 from botocore.exceptions import ClientError
 import logging
 
-def upload_file(file_name, object_name=None):
+def upload_file(file_name, user, response_id):
     """Upload a file to an S3 bucket
     :param file_name: File to upload
     :param bucket: Bucket to upload to
     :param object_name: S3 object name. If not specified then file_name is used
     :return: True if file was uploaded, else False
     """
+
+    response_type = Responses.objects.get(id=response_id).task.type
+    task = Responses.objects.get(id=response_id).task.id
+    object_name = f'{user}-{task}-{response_type}'
 
     # If S3 object_name was not specified, use file_name
     if object_name is None:
@@ -36,6 +40,7 @@ def upload_file(file_name, object_name=None):
     s3_client = boto3.client('s3')
     try:
         response = s3_client.upload_file(file_name.name, 'intonation-trainer', 'pilot-reponse-data/' + object_name + '.wav')
+        return response
     except ClientError as e:
         logging.error(e)
         return False
@@ -48,16 +53,22 @@ class ProcessAudio(APIView):
 
     def post(self, request):
         # audio_file = io.BytesIO(request.data.keys())
-        audio_data = [y for x,y in json.loads(request.data).items()]
+        
+        response_id = json.loads(request.data)['response_id']
+        print(response_id)
+        audio_data = [y for x,y in json.loads(request.data)['audio'].items()]
         temp_file = NamedTemporaryFile(delete=True)
         with temp_file as f:
             custom_audio_convert.write(f.name, 44100, np.asarray(audio_data))
             
             data = audio_utils.analyze_pitch(f)
             # time.sleep(3)
-            upload_response = upload_file(f, request.user)
-            print(request.user)
+            upload_response = upload_file(f, request.user.id, response_id)
+            print("User: ", request.user)
             print(upload_response)
+            response = Responses.objects.get(id=response_id)
+            response.complete = True
+            response.save()
 
             return HttpResponse(data)
 
@@ -115,18 +126,18 @@ class GetResponseSet(APIView):
         print(user.id)
         print(user.is_authenticated)
 
-        responses = Responses.objects.filter(user=1).values_list(flat=True).first()
-
+        responses = Responses.objects.filter(user=user.id).first()
         if responses == None:
             return HttpResponse(None)
         
         current_response = Responses.objects.filter(complete=False).first()
+        print(current_response.task.type, 'from get responses')
         
         
         if current_response == []:
             return HttpResponse({'data': [], 'message': 'All responses recorded for user.', 'user': user})
         
-        return HttpResponse(json.dumps({"taskData":current_response.task.config, "response_id": current_response.task.id}))
+        return HttpResponse(json.dumps({"taskData":current_response.task.config, "response_id": current_response.id, "task_id": current_response.task.id, "type":current_response.task.type}))
 
 
 class SubmitResponse(APIView):
@@ -137,9 +148,14 @@ class SubmitResponse(APIView):
     def post(self, request):
         '''Handle when user submits question'''
         print(request)
-        r_id = request.data['response_id']
-        r = Responses.objects.get(r_id)
-        return HttpResponse(r.data)
+        task_id = Responses.objects.get(id=request.data['response_id']).task.id
+        r = Responses.objects.filter(user=request.user).filter(task=task_id)
+        print(len(r))
+        r.update(complete=True)
+        
+        current_response = Responses.objects.filter(complete=False).first()
+        print(current_response.task.type, current_response.task.id)
+        return HttpResponse(json.dumps({"taskData":current_response.task.config, "response_id": current_response.id, "task_id": current_response.task.id, "type":current_response.task.type}))
 
 
 class PostActivity(APIView):

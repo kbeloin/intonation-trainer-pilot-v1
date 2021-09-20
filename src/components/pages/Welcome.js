@@ -64,7 +64,10 @@ axios.get('/api/get-responses/').then((response) => {
           method: "post",
           url: "/api/create-response-set/",
           data: { 'code': code }
-        }).then((res) => console.log("Created response set for user."))
+        }).then((res) => {
+          console.log("Created response set for user.")
+          nextTask()
+        })
       }})
 
     nextTask()
@@ -78,7 +81,7 @@ axios.get('/api/get-responses/').then((response) => {
       {
         const data = response.data
         console.log(data.type);
-        history.push(`/${data.taskData.type}`)
+        history.push(`/${data.type}`)
       // axios.post() // get most recent task
       });
   }
@@ -101,7 +104,7 @@ axios.get('/api/get-responses/').then((response) => {
         return
       }
       if (!newUser) {
-        history.push(`/${data.taskData.type}`)
+        history.push(`/${data.type}`)
       }
     })
     }, 
