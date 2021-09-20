@@ -55,7 +55,7 @@ class ProcessAudio(APIView):
             
             data = audio_utils.analyze_pitch(f)
             # time.sleep(3)
-            upload_response = upload_file(f)
+            upload_response = upload_file(f, request.user)
             print(request.user)
             print(upload_response)
 
@@ -83,7 +83,7 @@ class NewResponseSet(APIView):
 
     def post(self, request):
         '''Handle when user begins new experiment.'''
-        code = (request.data['code'])
+        code = request.data['code']
         experiment = Experiment.objects.filter(code=code).values_list(flat=True).first()
 
         responses = Tasks.objects.filter(experiment=experiment)
