@@ -10,40 +10,27 @@ import { getResponses } from '../utils/responseHelper';
 import axios from 'axios';
 import FormDialog from '../elements/FormDialog';
 import Fade from '@mui/material/Fade';
-
+import { PitchChart } from '../elements/AudioCharts';
+import Recorder from '../elements/Recorder';
+import TextField from '@mui/material/TextField';
 const useStyles = makeStyles((theme) => ({
-  content: {
+  content: { 
     justifyContent: "center",
     display: "flex"
   },
     paper: {
       padding: theme.spacing(2),
-      flexDirection: "column",
+      
       minWidth: '100vw',
-      minHeight: '80vh',
+      minHeight: '85vh',
       display:"flex",
       elevation: 3,
-      justifyContent:"center",
-      alignItems:"center"
+      position: 'relative'
+      
     },
     container: {
-        position: 'relative',
-        height: '100%',
-        justifyContent: "center"
+        
     },
-    button: {
-        position: 'absolute',
-        bottom:'0',
-        right: '0'
-    },
-    grid: {
-        height: "50%",
-        justifyContent:"center",
-        spacing:"0",
-        alignItems:"center",
-        direction:"column",
-        minHeight:"100%"
-    }
 }));
 
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -59,6 +46,9 @@ const Welcome = (props) => {
 axios.get('/api/get-responses/').then((response) => {
       console.log("Checking if user exists...")
       const data = response.data
+      if (data?.message === 'Next') { // Anon testing purposes
+          nextTask()
+      }
       if (data === 'None') {
         axios({
           method: "post",
@@ -111,24 +101,39 @@ axios.get('/api/get-responses/').then((response) => {
     [])
 
     return (
-      <div className={classes.content}>
+      <div>
         <Paper className={classes.paper}>
-            <Grid container className={classes.grid}>
-            <Grid item>
-              <Fade in={newUser}>
-                <Typography variant="h1" component="h2" gutterBottom>
-                    Welcome
-                </Typography>
-                </Fade>
+          <Grid container>
+            <Grid container direction="column" justifyContent="center" alignItems="center" >
+              <Grid  item xs={12}>
+                <Fade in={newUser}>
+                  <Typography variant="h1" component="h" gutterBottom>
+                  </Typography>
+                  </Fade>
+              </Grid>
             </Grid>
-            <Grid item>
-            <Container className={classes.container}>
+            <Grid container direction="column" justifyContent="flex-end" alignItems="center" >
+              <Grid  item xs={12}>
+                <Fade in={newUser}>
+                  <Typography variant="h1" component="h2" gutterBottom>
+                      Welcome
+                  </Typography>
+                  </Fade>
+              </Grid>
+            </Grid>
+            
+            <Grid container direction="column" justifyContent="center" alignItems="center" >
+              <Grid item xs={12}>
+            
+                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" />  */}
               {/* <NavLink className={classes.button} ref={taskRef} style={{ textDecoration: 'none' }} key= ''> */}
                 <FormDialog onSubmit={createTrial}/>
               {/* </NavLink> */}
-            </Container>
+            
+              </Grid>
             </Grid>
             </Grid>
+            
         </Paper>
         </div>
         );

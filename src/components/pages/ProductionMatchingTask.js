@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         flexDirection: "row",
         minWidth: '100vw',
-        minHeight: '80vh',
+        minHeight: '85vh',
         display:"flex-box",
         elevation: 3,
         alignItems:"center"
@@ -74,61 +74,42 @@ const ProductionMatchingTaskTemplate = (props) => {
             let pitchData = getPitchScatterData(response.data)
             // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
-            toggleLoading(false)
-         })
-    }
+            toggleLoading(false)});
+        }
     
     const nextTask = () => {
         let request = { 'response_id': currentTask.response_id, 'responseData': processedData }
         submitResponse(request).then((response) => {
-            
-
                     const data = response.data
-                    console.log(data.type);
-                    history.push(`/${data.type}`)
-                    setTask(data)
-
-                  ;
-              })
+                    history.push(`/`)
+              });
             }
 
     useEffect(() => {
         // Update the document title using the browser API (next action... taskType determines the element to show)
         if (processedData === null) {
-            
-            console.log("No changes recorded") 
+            getResponses().then((data)=>setTask(data.data))
         } else {
-
-        console.log("Processed data changed:", processedData)}
-        getResponses().then((data)=>
-        {
-            console.log(data)
-            setTask(data.data)
-            }
-        )
-
-
-        },[]);
+            console.log("Processed data changed:", processedData)
+            getResponses().then((data)=> { currentTask.task_id !== data.data.task_id ? nextTask(): setTask(data.data)});
+        }},[processedData]);
 
     return (
         <div className={classes.content}>
             <Paper className={classes.paper}>
                 <Grid container className={classes.grid}>
-                    <Typography>
-                        Production
-                    </Typography>
                     <Grid item>
                         <Paper id="question-data-container" className={classes.chart}>  
                         { currentTask ? <PitchChart data={getPitchScatterData(currentTask.taskData.audio)}/> : <CircularProgress />}
                         </Paper>
                         <Player url={ currentTask ? currentTask.taskData.files[0].filepath : null}></Player>
                     </Grid>
-                        <Grid item>
-                            <Paper id="response-data-container" className={classes.chart} >
-                                {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
-                            </Paper>
-                            <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
-                        </Grid>
+                    <Grid item>
+                        <Paper id="response-data-container" className={classes.chart} >
+                            {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
+                        </Paper>
+                        <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
+                    </Grid>
                     <Grid item>
                         <Button variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
                     </Grid>

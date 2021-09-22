@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import Button from '@material-ui/core/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -26,7 +26,7 @@ export default function FormDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button size="large" variant="outlined"  onClick={handleClickOpen}>
         Enter
       </Button>
       <Dialog open={open} onClose={handleClose}>

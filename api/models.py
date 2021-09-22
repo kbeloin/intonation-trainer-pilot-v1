@@ -36,6 +36,13 @@ class Activities(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     response = models.ForeignKey(Responses, on_delete=models.DO_NOTHING, null=True)
 
+class Sentence(models.Model):
+    audio = models.URLField(null=True)
+    sentence = models.TextField()
+    intonation = models.CharField(max_length=255)
+    pitch = models.JSONField(null=True)
+    prominent_words = models.JSONField(null=True) # { words: [ word1, word2 ]}
+    task = models.ManyToManyField(Tasks)
 
 
     

@@ -123,10 +123,8 @@ class GetResponseSet(APIView):
         - get response list, return most recent incomplete task. 
         '''
         user = request.user
-        print(user.id)
-        print(user.is_authenticated)
-
-        responses = Responses.objects.filter(user=user.id).first()
+        
+        responses = Responses.objects.filter(user=1).first()
         if responses == None:
             return HttpResponse(None)
         

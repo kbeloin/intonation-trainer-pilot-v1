@@ -4,8 +4,7 @@ html, body {
     padding: 0;
     background-color: #dfe1e5;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: fixed;
-    
+    position: fixed;
 }
 
 .App {
@@ -32,3 +31,7 @@ html, body {
 }
 
 
+.w-button {
+    position: relative;
+
+}

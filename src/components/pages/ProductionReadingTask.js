@@ -75,21 +75,15 @@ const ProductionReadingTaskTemplate = (props) => {
             // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
             toggleLoading(false)
-         })
+         });
     }
     
     const nextTask = () => {
         let request = { 'response_id': currentTask.response_id, 'responseData': processedData }
         submitResponse(request).then((response) => {
-            
-
                     const data = response.data
-
                     console.log(data)
                     history.push(`/`)
-                    
-
-                  ;
               })
             }
 
@@ -98,30 +92,16 @@ const ProductionReadingTaskTemplate = (props) => {
         if (processedData === null) {
             getResponses().then((data)=>setTask(data.data))
         } else {
-
-        console.log("Processed data changed:", processedData)
-        getResponses().then((data)=>
-        {
-            console.log(currentTask.task_id)
-            console.log(data.data.task_id)
-            currentTask.task_id !== data.data.task_id ? nextTask(): setTask(data.data)
-            // setTask(data.data)
-            }
-        )
-        }
-
-
-        },[processedData]);
+            console.log("Processed data changed:", processedData)
+            getResponses().then((data)=> { currentTask.task_id !== data.data.task_id ? nextTask(): setTask(data.data)});
+        }},[processedData]);
 
     return (
         <div className={classes.content}>
             <Paper className={classes.paper}>
                 <Grid container className={classes.grid}>
                     <Grid item>
-                        <Paper id="question-data-container" className={classes.chart}>  
-                        { currentTask ? <PitchChart data={getPitchScatterData(currentTask.taskData.audio)}/> : <CircularProgress />}
-                        </Paper>
-                        <Player url={ currentTask ? currentTask.taskData.files[0].filepath : null}></Player>
+                        
                     </Grid>
                         <Grid item>
                             <Paper id="response-data-container" className={classes.chart} >
@@ -130,7 +110,7 @@ const ProductionReadingTaskTemplate = (props) => {
                             <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
                         </Grid>
                     <Grid item>
-                        <Button variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
+                        <Button size="Large"variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
                     </Grid>
                 </Grid>
             </Paper>

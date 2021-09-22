@@ -5,11 +5,11 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress } from '@mui/material';
-import { withRouter, NavLink } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import Recorder from '../elements/Recorder'
 import Player from '../elements/Player';
 import { processAudioData, getPitchScatterData } from '../utils/processAudio.js'
-import { submitResponse } from '../utils/responseHelper'
+import { submitResponse, getResponses } from '../utils/responseHelper'
 import { PitchChart } from '../elements/AudioCharts';
 
 const useStyles = makeStyles((theme) => ({
@@ -58,41 +58,40 @@ const useStyles = makeStyles((theme) => ({
 
 const PerceptionTaskTemplate = (props) => {
     const classes = useStyles();
-    let [processedData, setProcessedData] = useState({})
-    let [taskData, setTaskData] = useState(true)
-    let [isLoading, toggleLoading] = useState(true)
-
-    let [chartA, setChartA] = useState()
-    let [chartB, setChartB] = useState()
-
-    let responseDataRef = useRef(null);
-    let questionDataRef = useRef(null);
+    let [processedData, setProcessedData] = useState(null)
+    let [currentTask, setTask] = useState(null)
+    let [isLoading, toggleLoading] = useState(false)
+    let history = useHistory()
     
     let handleAudioChange = (data) => {
+        const audio = data
+        const response_id = currentTask.response_id
+        const requestData = {"audio":audio, "response_id":response_id}
         // let newCanvas = resetCanvas('response-data', 'response-data-container', chartB)
-        console.log(isLoading)
-        processAudioData(data).then((response) => { 
+
+        processAudioData(requestData).then((response) => { 
             let pitchData = getPitchScatterData(response.data)
             // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
-            toggleLoading(false)
-         })
-    }
-
+            toggleLoading(false)});
+        }
+    
     const nextTask = () => {
-        let response = { 'taskData': taskData, 'responseData': processedData }
-        submitResponse()
-    }
+        let request = { 'response_id': currentTask.response_id, 'responseData': processedData }
+        submitResponse(request).then((response) => {
+                    const data = response.data
+                    history.push(`/`)
+              });
+            }
 
     useEffect(() => {
         // Update the document title using the browser API (next action... taskType determines the element to show)
         if (processedData === null) {
-            
-            console.log("No changes recorded") 
+            getResponses().then((data)=>setTask(data.data))
         } else {
-        console.log("Processed data changed:", processedData)}
-        
-        },[processedData]);
+            console.log("Processed data changed:", processedData)
+            getResponses().then((data)=> { currentTask.task_id !== data.data.task_id ? nextTask(): setTask(data.data)});
+        }},[processedData]);
 
     return (
         <div className={classes.content}>
@@ -100,16 +99,16 @@ const PerceptionTaskTemplate = (props) => {
                 <Grid container className={classes.grid}>
                     <Grid item>
                         <Paper id="question-data-container" className={classes.chart}>  
-                            <PitchChart data={[]}/>
+                        { currentTask ? <PitchChart data={getPitchScatterData(currentTask.taskData.audio)}/> : <CircularProgress />}
                         </Paper>
-                        <Player url={"https://intonation-trainer.s3.us-east-2.amazonaws.com/test-audio.mp3"}></Player>
+                        <Player url={ currentTask ? currentTask.taskData.files[0].filepath : null}></Player>
                     </Grid>
-                        <Grid item>
-                            <Paper id="response-data-container" className={classes.chart} >
-                                {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
-                            </Paper>
-                            <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
-                        </Grid>
+                    <Grid item>
+                        <Paper id="response-data-container" className={classes.chart} >
+                            {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
+                        </Paper>
+                        <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
+                    </Grid>
                     <Grid item>
                         <Button variant="outlined" onClick={() => {nextTask();}}>Welcome</Button>
                     </Grid>
