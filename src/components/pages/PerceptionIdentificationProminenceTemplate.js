@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
         
         minWidth: '100vw',
         height: '85vh',
-        maxHeight: '800',
         display:"flex",
         elevation: 3,
         position: 'relative',
@@ -42,6 +41,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 const PerceptionIdentificationProminenceTemplate = () => {
     const [correct, showCorrect] = useState(false);
     const [incorrect, showIncorrect] = useState(false);
+    const [force, showForcedForward] = useState(false)
     const [trial, setTrial] = useState(null);
     const sentenceData = ["id","filepath","prominent_words"]
     const history = useHistory()
@@ -52,6 +52,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
     const getResponse = () => {
         showCorrect(false)
         showIncorrect(false)
+        showForcedForward(false)
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)});
@@ -74,10 +75,17 @@ const PerceptionIdentificationProminenceTemplate = () => {
             return
         }
 
-        showIncorrect(true)
+        
         let request = { eval: 0, response: target, response_id: trial.response_id }
-        submitResponse(request)
-        nextTrial();
+        submitResponse(request).then((response)=> {
+            const data = response.data;
+            if (data.trial_id !== trial.trial_id) {
+                showForcedForward(true)
+            } else {
+                showIncorrect(true)
+            }
+
+        })
     }
 
     const nextTrial = () => {
@@ -149,12 +157,25 @@ const PerceptionIdentificationProminenceTemplate = () => {
                         Try again! Remember to listen to the tone choice at the <u>end</u> of the word.
                         </Alert>
                     </Collapse>
+                    <Collapse in={force}>
+                        <Alert
+                        action={
+                            <IconButton aria-label="close" color="error" size="small">
+                                
+                            </IconButton>
+                            }
+                        severity="error"
+                        sx={{ mb: 2 }}
+                        >
+                        You've reached the maximum number of attempts. Click next to continue!
+                        </Alert>
+                    </Collapse>
                 </Box>
                 <Stack direction="row" spacing={18} xs={12}>
-                    <WordList callback={evaluate} wordList={words} setWordList={setWords} correct={correct} incorrect={incorrect}/>
+                    <WordList callback={evaluate} wordList={words} setWordList={setWords} correct={correct} incorrect={incorrect} force={force}/>
                 </Stack>
             </Stack>
-            <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{nextTrial()}}  disabled={!correct}>Next</Button>
+            <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{nextTrial()}}  disabled={!correct || !force }>Next</Button>
         </Paper>
         </div>
     )

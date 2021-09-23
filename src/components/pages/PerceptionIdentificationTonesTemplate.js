@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         minWidth: '100vw',
         height: '85vh',
-        maxHeight: '800',
         display:"flex",
         elevation: 3,
         position: 'relative'

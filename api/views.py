@@ -20,6 +20,17 @@ import boto3
 from botocore.exceptions import ClientError
 import logging
 
+def remove_outiers(arr):
+    
+    mean = np.mean(arr)
+    standard_deviation = np.std(arr)
+    distance_from_mean = abs(arr - mean)
+    max_deviations = 2
+    not_outlier = distance_from_mean < max_deviations * standard_deviation
+    no_outliers = arr[not_outlier]
+
+    return no_outliers
+
 def upload_file(file_name, user, response_id):
     """Upload a file to an S3 bucket
     :param file_name: File to upload
@@ -28,9 +39,9 @@ def upload_file(file_name, user, response_id):
     :return: True if file was uploaded, else False
     """
 
-    response_type = UserResponse.objects.get(id=response_id).task.type
-    task = UserResponse.objects.get(id=response_id).task.id
-    object_name = f'{user}-{task}-{response_type}'
+    response_type = UserResponse.objects.get(id=response_id).trial.task.id
+    trial = UserResponse.objects.get(id=response_id).trial.id
+    object_name = f'{user}-{trial}-{trial}-{response_type}'
 
     # If S3 object_name was not specified, use file_name
     if object_name is None:
@@ -62,7 +73,7 @@ class ProcessAudio(APIView):
             custom_audio_convert.write(f.name, 44100, np.asarray(audio_data))
             
             data = audio_utils.analyze_pitch(f)
-            # time.sleep(3)
+            
             upload_response = upload_file(f, request.user.id, response_id)
             print("User: ", request.user)
             print(upload_response)
@@ -155,10 +166,14 @@ class GetResponseSet(APIView):
         print(sentence_data)
         
         meta = { "instructions": current_response.trial.task.instructions_text, "instructions_short": current_response.trial.task.instructions_short} 
+        if current_response.trial.target_field != None:
+            target = getattr(current_response.trial.target_sentence, current_response.trial.target_field)
+        else:
+            target = getattr(current_response.trial.target_sentence, 'id')
+
         
         
-        
-        return HttpResponse(json.dumps({"type":current_response.trial.task.type, "trial_id": current_response.trial.id, "response_id": current_response.id, "task_id": current_response.trial.task.id, "sentence": sentence_data, "text": meta, "target": getattr(current_response.trial.target_sentence, current_response.trial.target_field)}))
+        return HttpResponse(json.dumps({"type":current_response.trial.task.type, "trial_id": current_response.trial.id, "response_id": current_response.id, "task_id": current_response.trial.task.id, "sentence": sentence_data, "text": meta, "target": target }))
 
 
 class SubmitResponse(APIView):
@@ -170,7 +185,7 @@ class SubmitResponse(APIView):
         '''Handle when user submits question'''
         print(request)
         current_response = UserResponse.objects.get(id=request.data['response_id'])
-        print(request.data['eval'])
+        # print(request.data['eval'])
         print(request.data.keys())
         
         if request.data['eval'] == 1:
@@ -181,7 +196,7 @@ class SubmitResponse(APIView):
             related_responses = UserResponse.objects.filter(user=request.user).filter(trial=current_response.trial)
             related_responses.update(complete=True)
         else:
-            print("Incorrect. Changing all only one to complete.")
+            print("Incorrect. Changing only one to complete.")
             current_response.is_correct = False
             current_response.complete = True
             current_response.response = json.dumps(request.data['response'])
@@ -189,7 +204,7 @@ class SubmitResponse(APIView):
 
         next_response = UserResponse.objects.filter(complete=False).first()
         print(current_response.trial.task.type, current_response.trial.task.id)
-        return HttpResponse(json.dumps({"task_id": current_response.trial.task.id, "type":current_response.trial.task.type}))
+        return HttpResponse(json.dumps({"task_id": current_response.trial.task.id, "type":current_response.trial.task.type, "trial_id": current_response.trial.id }))
 
 
 class PostActivity(APIView):

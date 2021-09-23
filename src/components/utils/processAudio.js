@@ -21,7 +21,7 @@ export const processAudioData = async (data) => {
 }
 
 export const getPitchScatterData = (processedData) => {
-    
+    console.log(processedData)
     let data = processedData['x_y'] || []
     for (let i = 0; i < data.length; i++) {
         if (data[i]['x'] === 0) {

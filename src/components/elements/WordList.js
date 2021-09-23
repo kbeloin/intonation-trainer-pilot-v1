@@ -20,7 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
     }));
 
 
-export const WordList = ({callback, wordList, setWordList, correct, incorrect}) => {
+export const WordList = ({callback, wordList, setWordList, correct, incorrect, force}) => {
     
     const [word, setWord] = useState('')
 
@@ -55,8 +55,8 @@ export const WordList = ({callback, wordList, setWordList, correct, incorrect}) 
                     value={word}
                     onChange={handleInput}
                     />
-                <Button onClick={ handleAdd } value={word} disabled={correct || incorrect}> Add </Button>
-                <Button onClick={ () => { callback(wordList) } } disabled={correct || incorrect}> Submit</Button>
+                <Button onClick={ handleAdd } value={word} disabled={correct || incorrect || force }> Add </Button>
+                <Button onClick={ () => { callback(wordList) } } disabled={correct || incorrect || force}> Submit</Button>
             </Stack>
             <Stack direction="row" spacing={2}>
                     { wordList.map((item) => { return (
