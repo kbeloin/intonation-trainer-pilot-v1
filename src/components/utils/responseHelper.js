@@ -5,9 +5,11 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 export const getResponses = async (data) => {
     const response = await axios({
-        method: "get",
+        method: "post",
         url: "/api/get-responses/",
+        data: { params: data }
     });
+    console.log(data)
     console.log(response)
     return response
 }
@@ -27,7 +29,7 @@ export const submitResponse = async (data) => {
         const response = await axios({
             method: "post",
             url: "/api/submit-response/",
-            data:data
+            data: data
         });
         console.log("Submitted response")
         return response

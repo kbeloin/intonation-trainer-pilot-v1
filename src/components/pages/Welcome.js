@@ -13,6 +13,7 @@ import Fade from '@mui/material/Fade';
 import { PitchChart } from '../elements/AudioCharts';
 import Recorder from '../elements/Recorder';
 import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
 const useStyles = makeStyles((theme) => ({
   content: { 
     justifyContent: "center",
@@ -39,35 +40,39 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 const Welcome = (props) => {
   const [currentTask, setCurrentTask] = useState('/')
   const [newUser, setNewUser] = useState(false)
+  const [code, setCode] = useState("")
   const taskRef = useRef()
+  const sentenceData = ["id"]
   const history = useHistory()
 
   const createTrial = (code) => {
-axios.get('/api/get-responses/').then((response) => {
-      console.log("Checking if user exists...")
-      const data = response.data
-      if (data?.message === 'Next') { // Anon testing purposes
-          nextTask()
+    getResponses(sentenceData).then((response) => {
+          console.log("Checking if user exists...")
+          const data = response.data
+          if (data?.message === 'Next') { // Anon testing purposes
+              nextTask()
+          }
+          if (data === 'None') {
+            axios({
+              method: "post",
+              url: "/api/create-response-set/",
+              data: { 'code': code }
+            }).then((res) => {
+              console.log("Created response set for user.")
+              nextTask()
+            })
+          }})
+        // When the user selects Enter, experiement begins. 
+        // 1. Trial is created
+        // 2. Responses are intialize  
       }
-      if (data === 'None') {
-        axios({
-          method: "post",
-          url: "/api/create-response-set/",
-          data: { 'code': code }
-        }).then((res) => {
-          console.log("Created response set for user.")
-          nextTask()
-        })
-      }})
 
-    nextTask()
-    // When the user selects Enter, experiement begins. 
-    // 1. Trial is created
-    // 2. Responses are intialize  
+  const handleInput = (e) => {
+    setCode(e.target.value)
   }
 
   const nextTask = () => {
-    getResponses().then((response) => 
+    getResponses(sentenceData).then((response) => 
       {
         const data = response.data
         console.log(data.type);
@@ -75,10 +80,6 @@ axios.get('/api/get-responses/').then((response) => {
       // axios.post() // get most recent task
       });
   }
-  
-
-
-  
   // Entry point: 
   const classes = useStyles();
 
@@ -87,18 +88,17 @@ axios.get('/api/get-responses/').then((response) => {
     // console.log(nav)
     // setCurrentTask('/production-task/')
     // console.log('Loaded')
-    axios.get('/api/get-responses/').then((response) => {
+    getResponses(sentenceData).then((response) => {
       const data = response.data
       if (data === 'None') {
         setNewUser(true)
-        return
-      }
-      if (!newUser) {
+        
+      } else {
+        console.log("User exists. Redirecting to: ", data.type)
         history.push(`/${data.type}`)
       }
     })
-    }, 
-    [])
+    },[])
 
     return (
       <div>
@@ -123,14 +123,19 @@ axios.get('/api/get-responses/').then((response) => {
             </Grid>
             
             <Grid container direction="column" justifyContent="center" alignItems="center" >
-              <Grid item xs={12}>
-            
-                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" />  */}
-              {/* <NavLink className={classes.button} ref={taskRef} style={{ textDecoration: 'none' }} key= ''> */}
-                <FormDialog onSubmit={createTrial}/>
-              {/* </NavLink> */}
-            
-              </Grid>
+            <Stack direction="row" spacing={6} xs={12}>
+            <TextField
+        autoFocus
+        margin="dense"
+        id="code"
+        label="Experiment Code"
+        
+        variant="outlined"
+        value={code}
+        onChange={handleInput}
+            />
+            <Button onClick={ () => {createTrial(code)} }> Enter</Button>
+                </Stack>
             </Grid>
             </Grid>
             

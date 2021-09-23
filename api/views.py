@@ -4,9 +4,9 @@ import numpy as np
 import requests
 from rest_framework import viewsets
 from rest_framework import response          # add this
-from .serializers import TaskSerializer, ExperimentSerializer, ResponseSerializer, ActivitySerializer       # add this
+from .serializers import TaskSerializer, ExperimentSerializer, ResponseSerializer, ActivitySerializer, Sentence       # add this
 from rest_framework.views import APIView
-from .models import Experiment, Tasks, Responses, User
+from .models import Experiment, Task, UserResponse, User, Trial
 from django.views import View
 from rest_framework.response import Response
 from django.http import HttpResponse, HttpResponseNotFound
@@ -28,8 +28,8 @@ def upload_file(file_name, user, response_id):
     :return: True if file was uploaded, else False
     """
 
-    response_type = Responses.objects.get(id=response_id).task.type
-    task = Responses.objects.get(id=response_id).task.id
+    response_type = UserResponse.objects.get(id=response_id).task.type
+    task = UserResponse.objects.get(id=response_id).task.id
     object_name = f'{user}-{task}-{response_type}'
 
     # If S3 object_name was not specified, use file_name
@@ -66,44 +66,48 @@ class ProcessAudio(APIView):
             upload_response = upload_file(f, request.user.id, response_id)
             print("User: ", request.user)
             print(upload_response)
-            response = Responses.objects.get(id=response_id)
+            response = UserResponse.objects.get(id=response_id)
             response.complete = True
             response.save()
 
             return HttpResponse(data)
 
 class NewResponseSet(APIView):
-    model = Responses
+    model = UserResponse
     create_field = None
-    queryset = Tasks.objects.all() 
+    queryset = Task.objects.all() 
 
     def create_set(self,tasks,user):
         '''Create the reponse set'''
         print ("Creating...")
+        
+
         for task in tasks:
-            if task.attempts > 0:
-                for i in range(task.attempts):
-                    r = Responses(user=user, experiment=task.experiment, task=task)
-                    r.save()
-            print(task.type)
-            r = Responses(user=user, experiment=task.experiment, task=task)
-            r.save()
-            
+            trials = Trial.objects.filter(task=task)
+            for trial in trials:
+                if task.attempts > 0:
+                    for i in range(task.attempts):
+                        r = UserResponse(user=user, experiment=task.experiment, trial=trial)
+                        r.save()
+                print(task.type)
+                r = UserResponse(user=user, experiment=task.experiment, trial=trial)
+                r.save()
         return 
 
 
     def post(self, request):
         '''Handle when user begins new experiment.'''
         code = request.data['code']
+
         experiment = Experiment.objects.filter(code=code).values_list(flat=True).first()
 
-        responses = Tasks.objects.filter(experiment=experiment)
+        tasks = Task.objects.filter(experiment=experiment)
         
-        self.create_set(responses, request.user)
-        # print(Tasks.objects.get(10))
+        self.create_set(tasks, request.user)
+        # print(Task.objects.get(10))
         # requestData = json.loads(request.data.items())
-        # taskSet = Tasks.objects.filter(experiment_code=requestData['code'])
-        # responseSet = Responses.objects.filter(reponses_user=User)
+        # taskSet = Task.objects.filter(experiment_code=requestData['code'])
+        # responseSet = UserResponse.objects.filter(reponses_user=User)
 
         # print(responseSet[0]) # Sort these, pick first...
 
@@ -111,11 +115,11 @@ class NewResponseSet(APIView):
     
 
 class GetResponseSet(APIView):
-    model = Responses
+    model = UserResponse
     create_field = None
-    queryset = Responses.objects.all()            # add this
+    queryset = UserResponse.objects.all()            # add this
 
-    def get(self, request):
+    def post(self, request):
         
         '''Handle when a user begins a new experiment. Takes user + experiment id as input:
         Returns:
@@ -124,42 +128,74 @@ class GetResponseSet(APIView):
         '''
         user = request.user
         
-        responses = Responses.objects.filter(user=1).first()
+        responses = UserResponse.objects.filter(user=1).first()
         if responses == None:
             return HttpResponse(None)
-        
-        current_response = Responses.objects.filter(complete=False).first()
-        print(current_response.task.type, 'from get responses')
-        
-        
-        if current_response == []:
+        print(request.data)
+        request_params = request.data['params'] # list of expected data
+
+        current_response = UserResponse.objects.filter(complete=False).first()
+        if current_response == None:
             return HttpResponse({'data': [], 'message': 'All responses recorded for user.', 'user': user})
         
-        return HttpResponse(json.dumps({"taskData":current_response.task.config, "response_id": current_response.id, "task_id": current_response.task.id, "type":current_response.task.type}))
+        current_sentence = Sentence.objects.filter(trial=current_response.trial)
+
+        if len(current_sentence) == 1:
+            sentence_data = {}
+            current_sentence = current_sentence.first()
+            for param in request_params:
+                sentence_data[f'{param}'] = getattr(current_sentence, param)
+        else:
+            sentence_data = []
+            for sentence in current_sentence:
+                s = {}
+                for param in request_params:
+                    s[f'{param}'] = getattr(sentence, param)
+                sentence_data.append(s)
+        print(sentence_data)
+        
+        meta = { "instructions": current_response.trial.task.instructions_text, "instructions_short": current_response.trial.task.instructions_short} 
+        
+        
+        
+        return HttpResponse(json.dumps({"type":current_response.trial.task.type, "trial_id": current_response.trial.id, "response_id": current_response.id, "task_id": current_response.trial.task.id, "sentence": sentence_data, "text": meta, "target": getattr(current_response.trial.target_sentence, current_response.trial.target_field)}))
 
 
 class SubmitResponse(APIView):
-    model = Responses
+    model = UserResponse
     create_field = None
-    queryset = Responses.objects.filter(complete=False)        # add this
+    queryset = UserResponse.objects.filter(complete=False)        # add this
 
     def post(self, request):
         '''Handle when user submits question'''
         print(request)
-        task_id = Responses.objects.get(id=request.data['response_id']).task.id
-        r = Responses.objects.filter(user=request.user).filter(task=task_id)
-        print(len(r))
-        r.update(complete=True)
+        current_response = UserResponse.objects.get(id=request.data['response_id'])
+        print(request.data['eval'])
+        print(request.data.keys())
         
-        current_response = Responses.objects.filter(complete=False).first()
-        print(current_response.task.type, current_response.task.id)
-        return HttpResponse(json.dumps({"taskData":current_response.task.config, "response_id": current_response.id, "task_id": current_response.task.id, "type":current_response.task.type}))
+        if request.data['eval'] == 1:
+            print("Correct. Changing all related to complete.")
+            current_response.is_correct = True
+            current_response.response = json.dumps(request.data['response'])
+            current_response.save()
+            related_responses = UserResponse.objects.filter(user=request.user).filter(trial=current_response.trial)
+            related_responses.update(complete=True)
+        else:
+            print("Incorrect. Changing all only one to complete.")
+            current_response.is_correct = False
+            current_response.complete = True
+            current_response.response = json.dumps(request.data['response'])
+            current_response.save()
+
+        next_response = UserResponse.objects.filter(complete=False).first()
+        print(current_response.trial.task.type, current_response.trial.task.id)
+        return HttpResponse(json.dumps({"task_id": current_response.trial.task.id, "type":current_response.trial.task.type}))
 
 
 class PostActivity(APIView):
-    model = Responses
+    model = UserResponse
     create_field = None
-    queryset = Responses.objects.filter(complete=False)        # add this
+    queryset = UserResponse.objects.filter(complete=False)        # add this
 
     def post(self, request):
         '''Handle when user submits question'''
