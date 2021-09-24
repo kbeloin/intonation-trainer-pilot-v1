@@ -139,7 +139,7 @@ class GetResponseSet(APIView):
         - get response list, return most recent incomplete task. 
         '''
         user = request.user
-        responses = UserResponse.objects.filter(user=user.id).first()
+        responses = UserResponse.objects.filter(user=user.id)
         
         if responses == None:
             return HttpResponse(None)
