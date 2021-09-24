@@ -61,14 +61,9 @@ const End = (props) => {
         <Paper className={classes.paper}>
             <Grid container className={classes.grid}>
                 <Typography variant="h1" component="h2" gutterBottom>
-                    Welcome
+                    Thank You!
                 </Typography>
             </Grid>
-            <Container className={classes.container}>
-              <NavLink className={classes.button} to='/production-task' style={{ textDecoration: 'none' }} key= ''>
-                <Button variant="outlined">Enter</Button>
-              </NavLink>
-            </Container>
         </Paper>
         </div>
         );

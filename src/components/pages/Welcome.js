@@ -48,7 +48,7 @@ const Welcome = (props) => {
   const createTrial = (code) => {
     getResponses(sentenceData).then((response) => {
           console.log("Checking if user exists...")
-          
+
           const data = response.data
           if (data?.message === 'Next') { // Anon testing purposes
               nextTask()
@@ -91,12 +91,11 @@ const Welcome = (props) => {
     // console.log('Loaded')
     getResponses(sentenceData).then((response) => {
       const data = response.data
+      console.log(data)
       if (data === 'None') {
         setNewUser(true)
-        history.push(`/${data.type}`)
-        
+        return
       } else {
-
         if (data.type === undefined) {
           return
         } else {
