@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +15,8 @@ import Collapse from '@mui/material/Collapse';
 import { getResponses, submitResponse } from '../utils/responseHelper';
 import { withRouter, useHistory } from 'react-router-dom';
 import Icon from '@mui/material/Icon'
+import remainingAttempts from '../utils/remainingAttempts'
+import Instructions from './Instructions'
 
 const useStyles = makeStyles((theme) => ({
     content: { 
@@ -44,6 +46,7 @@ export const PerceptionIdentificationTonesTemplate = () => {
     const [trial, setTrial] = useState(null);
     const sentenceData = ["id","filepath","intonation"]
     const history = useHistory()
+    const instructionRef = useRef()
 
     const classes = useStyles();
 
@@ -91,17 +94,19 @@ export const PerceptionIdentificationTonesTemplate = () => {
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
-            setTrial(data)});
+            setTrial(data)
+            instructionRef.current.textContent = data.text.instructions})
     },[]);
 
     return (
         <div>
+            <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
+                    <Instructions childRef={instructionRef}/>
+                    <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    </Typography> 
+                </Stack>
         <Paper className={classes.paper}>
-        <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                <Typography variant="subtitle1" component="h2" gutterBottom>
-                   {trial ? "TRIAL " + trial.trial_id + " : " + trial.response_id : "Loading" }
-                </Typography> 
-            </Stack>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
                       {trial ? trial.text.instructions_short : "Loading..."} 

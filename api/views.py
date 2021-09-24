@@ -25,7 +25,7 @@ def remove_outiers(arr):
     mean = np.mean(arr)
     standard_deviation = np.std(arr)
     distance_from_mean = abs(arr - mean)
-    max_deviations = 2
+    max_deviations = 3
     not_outlier = distance_from_mean < max_deviations * standard_deviation
     no_outliers = arr[not_outlier]
 
@@ -77,9 +77,10 @@ class ProcessAudio(APIView):
             upload_response = upload_file(f, request.user.id, response_id)
             print("User: ", request.user)
             print(upload_response)
-            response = UserResponse.objects.get(id=response_id)
-            response.complete = True
-            response.save()
+            # response = UserResponse.objects.get(id=response_id)
+            # response.complete = True
+            # response.response = json.loads(data)
+            # response.save()
 
             return HttpResponse(data)
 
@@ -97,10 +98,10 @@ class NewResponseSet(APIView):
             trials = Trial.objects.filter(task=task)
             for trial in trials:
                 if task.attempts > 0:
-                    for i in range(task.attempts):
+                    for i in range(task.attempts - 1):
                         r = UserResponse(user=user, experiment=task.experiment, trial=trial)
                         r.save()
-                print(task.type)
+                
                 r = UserResponse(user=user, experiment=task.experiment, trial=trial)
                 r.save()
         return 
@@ -138,16 +139,17 @@ class GetResponseSet(APIView):
         - get response list, return most recent incomplete task. 
         '''
         user = request.user
-        
         responses = UserResponse.objects.filter(user=1).first()
+        
         if responses == None:
             return HttpResponse(None)
-        print(request.data)
-        request_params = request.data['params'] # list of expected data
+
+       
+        request_params = request.data['params'] # list of expected data about sentences.
 
         current_response = UserResponse.objects.filter(complete=False).first()
         if current_response == None:
-            return HttpResponse({'data': [], 'message': 'All responses recorded for user.', 'user': user})
+            return HttpResponse(None)
         
         current_sentence = Sentence.objects.filter(trial=current_response.trial)
 
@@ -166,14 +168,13 @@ class GetResponseSet(APIView):
         print(sentence_data)
         
         meta = { "instructions": current_response.trial.task.instructions_text, "instructions_short": current_response.trial.task.instructions_short} 
+        
         if current_response.trial.target_field != None:
             target = getattr(current_response.trial.target_sentence, current_response.trial.target_field)
         else:
             target = getattr(current_response.trial.target_sentence, 'id')
 
-        
-        
-        return HttpResponse(json.dumps({"type":current_response.trial.task.type, "trial_id": current_response.trial.id, "response_id": current_response.id, "task_id": current_response.trial.task.id, "sentence": sentence_data, "text": meta, "target": target }))
+        return HttpResponse(json.dumps({"type":current_response.trial.task.type, "attempts":current_response.trial.task.attempts, "trial_id": current_response.trial.id, "response_id": current_response.id, "task_id": current_response.trial.task.id, "sentence": sentence_data, "text": meta, "target": target }))
 
 
 class SubmitResponse(APIView):
@@ -183,10 +184,10 @@ class SubmitResponse(APIView):
 
     def post(self, request):
         '''Handle when user submits question'''
-        print(request)
-        current_response = UserResponse.objects.get(id=request.data['response_id'])
+        current_response = UserResponse.objects.get(id=request.data['response_id']) # What response is being saved?
+         # What values are being submitted? (JSON)
+        
         # print(request.data['eval'])
-        print(request.data.keys())
         
         if request.data['eval'] == 1:
             print("Correct. Changing all related to complete.")
@@ -202,9 +203,12 @@ class SubmitResponse(APIView):
             current_response.response = json.dumps(request.data['response'])
             current_response.save()
 
-        next_response = UserResponse.objects.filter(complete=False).first()
-        print(current_response.trial.task.type, current_response.trial.task.id)
-        return HttpResponse(json.dumps({"task_id": current_response.trial.task.id, "type":current_response.trial.task.type, "trial_id": current_response.trial.id }))
+        next_response = UserResponse.objects.filter(user=current_response.user).filter(complete=False).first()
+        if next_response == None:
+            return  HttpResponse(json.dumps({"nextType": "end"}))
+
+        # print(current_response.trial.task.type, current_response.trial.task.id)
+        return HttpResponse(json.dumps({"nextTaskId": next_response.trial.task.id, "nextType":next_response.trial.task.type, "nextTrialId": next_response.trial.id, "nextResponseId": next_response.id }))
 
 
 class PostActivity(APIView):

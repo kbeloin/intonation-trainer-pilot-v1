@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -18,6 +18,9 @@ import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Icon from '@mui/material/Icon'
+import remainingAttempts from '../utils/remainingAttempts';
+import Instructions from './Instructions';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
         display:"flex",
         elevation: 3,
         position: 'relative',
+        
     },
     container: {
         position: 'relative',
@@ -49,17 +53,16 @@ const useStyles = makeStyles((theme) => ({
         right: '50px'
     },
     chart: {
-        
         justifyContent:"center",
         alignItems:"center",
         direction:"column",
-        minHeight:"40%",
+        minHeight:"100%",
         marginBottom: "1vh",
-        minWidth:"35vw",
+        minWidth:"30vw",
     }
 }));
 
-const ProductionMatchingTaskTemplate = (props) => {
+const ProductionControlledTemplate = (props) => {
     const classes = useStyles();
     let [processedData, setProcessedData] = useState(null)
 
@@ -67,8 +70,8 @@ const ProductionMatchingTaskTemplate = (props) => {
     let [isLoading, toggleLoading] = useState(false)
     let [correct, showCorrect] = useState(false)
     let [incorrect, showIncorrect] = useState(false)
-    const sentenceData = ["id","filepath","pitch"]
-
+    let sentenceData = ["id","filepath","pitch"]
+    let instructionRef = useRef()
     let history = useHistory()
 
     const getResponse = () => {
@@ -91,6 +94,7 @@ const ProductionMatchingTaskTemplate = (props) => {
             // setChartB(newPitchChart(newCanvas, pitchData, chartB)) // Destroys chart / resets element
             setProcessedData(pitchData)
             toggleLoading(false)});
+            evaluate()
         }
 
     const evaluate = () => {
@@ -100,9 +104,8 @@ const ProductionMatchingTaskTemplate = (props) => {
             
             let request = { eval: 1, response: {data: processedData}, response_id: trial.response_id }
             submitResponse(request)
+            nextTrial()
             return
-            
-            
         } else {
 
         showIncorrect(true)
@@ -111,7 +114,7 @@ const ProductionMatchingTaskTemplate = (props) => {
         }
     }
     const nextTrial = () => {
-        let request = ["id"]
+        let request = sentenceData
         getResponses(request).then((response) => {
                     const data = response.data
                     console.log(data)
@@ -123,89 +126,69 @@ const ProductionMatchingTaskTemplate = (props) => {
                         console.log("Trial completed. Moving to next trial")
                         getResponse()
                     }
-
                     else {
                         setTrial(data)
                     }
-              })
+                })
             }
 
-    useEffect(() => {
-        // Update the document title using the browser API (next action... trialType determines the element to show)
-        if (processedData === null) {
-            getResponses(sentenceData).then((data)=>setTrial(data.data))
-        } else {
-            console.log("Processed data changed:", processedData)
-            getResponses(sentenceData).then((data)=> { trial.trial_id !== data.data.trial_id ? setTrial(): setTrial(data.data)});
-        }},[processedData]);
+    useEffect( () => {
+        getResponses(sentenceData).then((response) => {
+            const data = response.data
+            setTrial(data)
+            instructionRef.current.textContent = data.text.instructions});
+    },[]);
 
     return (
-        <div>
-            <Paper className={classes.paper}>
-            
-                
-                <Typography marginRight={'50px'} variant="subtitle1" component="h2" gutterBottom>
-                   {trial ? "TRIAL " + trial.trial_id + " : " + trial.response_id : "Loading" }
-                </Typography> 
-           
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-                <Typography marginRight={'50px'} variant="body1" component="h1" gutterBottom>
-                      {trial ? trial.text.instructions_short : "Loading..."} 
-                  </Typography>
-                  <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                  <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-                        <Paper id="question-data-container" className={classes.chart}>  
-                        { trial ? <PitchChart data={getPitchScatterData(trial.sentence.pitch)}/> : <CircularProgress />}
-                        </Paper>
-                        <Player url={ trial ? trial.sentence.filepath : null}></Player>
-                    </Stack>
+            <div>
+                <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
+                    <Instructions childRef={instructionRef}/>
+                    <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    </Typography> 
+                </Stack>
+                <Paper className={classes.paper}>
+                    
                     <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-                             
-                            <Paper id="response-data-container" className={classes.chart} style={{width:'100%', height:'100%'}}>
-                                {isLoading ? <CircularProgress /> : <PitchChart data={processedData}/>}
-                            </Paper>
-                            <Recorder sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
-                        </Stack>
-                    </Stack>
-                    </Stack>
-                    <Box style={{width: "100%"}}>
-                        <Collapse in={correct}>
-                            <Alert
-                            action={
-                                <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                >
-                                </IconButton>
-                            }
-                            sx={{ mb: 2 }}
-                            >
-                            Well done! Click next to continue.
-                            </Alert>
-                        </Collapse>
-                        <Collapse in={incorrect}>
-                        <Alert
-                        action={
-                            <IconButton aria-label="close" color="error" size="small" onClick={() => { showIncorrect(false)}}>
-                                <Icon>close</Icon>
-                            </IconButton>
-                            }
-                        severity="error"
-                        sx={{ mb: 2 }}
-                        >
-                        Something went wrong with the audio recording! Please try again.
-                        </Alert>
-                        </Collapse>
-                    </Box>
-                    <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                        
-               <Button className={classes.button} variant="outlined" onClick={() => {evaluate();}}>Next</Button>
-            </Stack>
-                
+                        <Typography marginRight={'50px'} variant="body1" component="h1" gutterBottom>
+                            {trial ? trial.text.instructions_short : "Loading..."} 
+                        </Typography>
+                        <Stack direction="column"  spacing={5}>
+                            <Stack direction="row" justifyContent="center" alignItems="center" spacing={5} xs={6}>
+                                { trial ? 
+                                <Paper id="question-data-container" className={classes.chart}>  
+                                    <PitchChart data={getPitchScatterData(trial.sentence.pitch)}/> 
+                                </Paper>
+                                :
+                                <Paper id="response-data-container" className={classes.chart}>
+                                    <CircularProgress/> 
+                                </Paper>}
+                                {isLoading ? 
+                                <Paper id="response-data-container" className={classes.chart}>
+                                    <CircularProgress/> 
+                                </Paper>
+                                :   
+                                <Paper id="response-data-container" className={classes.chart}>
+                                    <PitchChart data={processedData}/>
+                                </Paper>}
+                                </Stack>
+                                <Stack direction="row" spacing={22} xs={12}>
+                                    <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" alignContent="flex-start"spacing={15} xs={12}> 
+                                        <Player url={ trial ? trial.sentence.filepath : null}></Player>
+                                    </Stack>
+                                        <Stack direction="column" justifyContent="flex-end" alignItems="flex-end" alignContent="flex-end"spacing={12} xs={6}> 
+                                            <Recorder alignSelf="flex-end" sets={(data) => {handleAudioChange(data); toggleLoading(true);} }/>
+                                        </Stack>
+                                    </Stack>
+                                </Stack>
+                            </Stack>
+                        <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>    
+                    <Button className={classes.button} variant="outlined" onClick={() => {nextTrial()}}>Next</Button>
+                </Stack>
             </Paper>
         </div>
         );
     }
 
-export default withRouter(ProductionMatchingTaskTemplate)
+export default withRouter(ProductionControlledTemplate)
+

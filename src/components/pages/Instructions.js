@@ -15,10 +15,8 @@ import Collapse from '@mui/material/Collapse';
 import { getResponses, submitResponse } from '../utils/responseHelper';
 import { withRouter, useHistory } from 'react-router-dom';
 import Icon from '@mui/material/Icon'
-import * as React from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
 
 const useStyles = makeStyles((theme) => ({
       paper: {
@@ -39,7 +37,10 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 
 export const Instructions = (props) => {
-    const [open, setOpen] = useState(false);
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(true);
+
     const handleClose = () => {
       setOpen(false);
     };
@@ -50,28 +51,19 @@ export const Instructions = (props) => {
     
     return (
         <div>
-        
+            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                            <Icon>help</Icon>
+                        </IconButton>
             <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
         onClick={handleClose}
       >
-        <Paper className={classes.paper}>
-        <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                <Typography variant="subtitle1" component="h2" gutterBottom>
-                   {trial ? "TRIAL " + trial.trial_id + " : " + trial.response_id : "Loading" }
-                    </Typography> 
-                    </Stack>
-                    <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-                        <Typography variant="subtitle1" component="h2" gutterBottom>
-                            
-                            </Typography>
-                            <Box style={{width: "100%"}}>
-                        </Box>
-                    </Stack>
-                <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{handleclose()}}  disabled={!correct}>Next</Button>
-                
-            </Paper>
+        <Paper className={classes.paper} >
+            <Typography variant="h2" component="h2" gutterBottom ref={props.childRef}>
+
+            </Typography>
+        </Paper>
       </Backdrop>
         </div>
     )

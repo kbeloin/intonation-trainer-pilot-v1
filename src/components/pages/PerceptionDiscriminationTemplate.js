@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -18,6 +18,8 @@ import WordList from '../elements/WordList';
 import Icon from '@mui/material/Icon'
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Instructions from './Instructions';
+import remainingAttempts from '../utils/remainingAttempts';
 
 const useStyles = makeStyles((theme) => ({
     content: { 
@@ -53,7 +55,7 @@ const PerceptionDiscriminationTemplate = () => {
     const [prominent, setProminent] = useState(null)
     const [sentenceA, setA] = useState(null)
     const [sentenceB, setB] = useState(null)
-
+    const instructionRef = useRef()
 
     const sentenceData = ["id","filepath"]
     const history = useHistory()
@@ -134,9 +136,9 @@ const PerceptionDiscriminationTemplate = () => {
     useEffect( () => {
       
         getResponses(sentenceData).then((response) => {
-            console.log(response.data)
             const data = response.data
             setTrial(data)
+            instructionRef.current.textContent = data.text.instructions
 
             console.log(data.sentence[0])
             setA(data.sentence[0])
@@ -149,6 +151,7 @@ const PerceptionDiscriminationTemplate = () => {
 ///Change
     return (
         <div>
+            <Instructions />
         <Paper className={classes.paper}>
         <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>

@@ -48,6 +48,7 @@ const Welcome = (props) => {
   const createTrial = (code) => {
     getResponses(sentenceData).then((response) => {
           console.log("Checking if user exists...")
+          
           const data = response.data
           if (data?.message === 'Next') { // Anon testing purposes
               nextTask()
@@ -92,10 +93,18 @@ const Welcome = (props) => {
       const data = response.data
       if (data === 'None') {
         setNewUser(true)
+        history.push(`/${data.type}`)
         
       } else {
-        console.log("User exists. Redirecting to: ", data.type)
-        history.push(`/${data.type}`)
+
+        if (data.type === undefined) {
+          return
+        } else {
+          console.log("User exists. Redirecting to: ", data.type)
+          console.log(data.type)
+          history.push(`/${data.type}`)
+        }
+      
       }
     })
     },[])
@@ -114,11 +123,11 @@ const Welcome = (props) => {
             </Grid>
             <Grid container direction="column" justifyContent="flex-end" alignItems="center" >
               <Grid  item xs={12}>
-                <Fade in={newUser}>
+                
                   <Typography variant="h1" component="h2" gutterBottom>
                       Welcome
                   </Typography>
-                  </Fade>
+                  
               </Grid>
             </Grid>
             
