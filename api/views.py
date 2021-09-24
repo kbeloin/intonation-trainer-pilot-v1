@@ -141,7 +141,8 @@ class GetResponseSet(APIView):
         user = request.user
         responses = UserResponse.objects.filter(user=user.id)
         
-        if responses == None:
+        if len(responses) == 0:
+            print('Hello from user creation1')
             return HttpResponse(None)
 
        
@@ -150,9 +151,11 @@ class GetResponseSet(APIView):
         current_response = responses.filter(complete=False).first()
 
         if len(responses.filter(complete=False)) == 0:
+            print('Hello from creation2')
             return HttpResponse('Done')
-            
+
         if current_response == None:
+            print('Hello from creation3')
             return HttpResponse(None)
         
         current_sentence = Sentence.objects.filter(trial=current_response.trial)

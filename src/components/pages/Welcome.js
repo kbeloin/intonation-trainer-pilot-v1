@@ -76,6 +76,7 @@ const Welcome = (props) => {
   const nextTask = () => {
     getResponses(sentenceData).then((response) => 
       {
+        console.log(response)
         const data = response.data
         console.log(data.type);
         history.push(`/${data.type}`)
