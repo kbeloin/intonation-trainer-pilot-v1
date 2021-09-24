@@ -113,7 +113,7 @@ export const PerceptionIdentificationTonesTemplate = () => {
         <Paper className={classes.paper}>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
-                      {trial ? trial.text.instructions_short : "Loading..."} 
+                      {!trial ? "Loading..." : trial.text.instructions_short} 
                   </Typography>
                 <Player url={trial ? trial.sentence.filepath : null}/>
                 <Box style={{width: "100%"}}>

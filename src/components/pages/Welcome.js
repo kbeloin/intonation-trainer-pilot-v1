@@ -93,19 +93,10 @@ const Welcome = (props) => {
     getResponses(sentenceData).then((response) => {
       const data = response.data
       console.log(data)
-      if (data === 'None') {
-        setNewUser(true)
-        return
-      } else {
-        if (data.type === undefined) {
-          return
-        } else {
-          console.log("User exists. Redirecting to: ", data.type)
-          console.log(data.type)
+      if (data.type !== undefined) {
           history.push(`/${data.type}`)
         }
-      
-      }
+
     })
     },[])
 
