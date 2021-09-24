@@ -148,6 +148,10 @@ class GetResponseSet(APIView):
         request_params = request.data['params'] # list of expected data about sentences.
 
         current_response = responses.filter(complete=False).first()
+
+        if len(responses.filter(complete=False)) == 0:
+            return HttpResponse('Done')
+            
         if current_response == None:
             return HttpResponse(None)
         

@@ -111,6 +111,9 @@ const ProductionGuidedTemplate = (props) => {
     const Next = () => {
         let request = sentenceData
         getResponses(request).then((response) => {
+            if (respponse.data == 'Done') {
+                history.push('/done')
+            }
                     const data = response.data
                     console.log(data)
                     if (data.task_id != trial.task_id) {
@@ -193,7 +196,7 @@ const ProductionGuidedTemplate = (props) => {
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
 
-            if (response.type === undefined) {
+            if (response.type === 'Done') {
                 history.push('/done')
             } 
             const data = response.data

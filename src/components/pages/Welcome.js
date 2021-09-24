@@ -115,10 +115,10 @@ const Welcome = (props) => {
             <Grid container direction="column" justifyContent="flex-end" alignItems="center" >
               <Grid  item xs={12}>
                 
-                  <Typography variant="h1" component="h2" gutterBottom>
+                  <Typography variant="subtitle1" component="h2" gutterBottom>
                       Welcome
                   </Typography>
-                  <Typography variant="h1" component="h" gutterBottom>
+                  <Typography variant="subtitle1" component="h2" gutterBottom>
                     Welcome to the study investigating English intonation and learning. Before starting, please observe the following requirements:
                     <Stack direction="column" xs={4}> 
                     1. Wear a headset with microphone (or make sure your computer has a microphone.

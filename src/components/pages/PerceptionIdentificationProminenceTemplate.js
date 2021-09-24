@@ -220,7 +220,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
                         severity="error"
                         sx={{ mb: 2 }}
                         >
-                        Try again! Remember to listen to the tone choice at the <u>end</u> of the word.
+                        Try again! Listen and try again. 
                         </Alert>
                     </Collapse>
                     <Collapse in={force}>
