@@ -42,6 +42,7 @@ const Welcome = (props) => {
   const [newUser, setNewUser] = useState(false)
   const [code, setCode] = useState("")
   const taskRef = useRef()
+  const exampleRef = useRef()
   const sentenceData = ["id"]
   const history = useHistory()
 

@@ -167,7 +167,7 @@ class GetResponseSet(APIView):
                 sentence_data.append(s)
         print(sentence_data)
         
-        meta = { "instructions": current_response.trial.task.instructions_text, "instructions_short": current_response.trial.task.instructions_short} 
+        meta = { "instructions": current_response.trial.task.instructions_text, "instructions_short": current_response.trial.task.instructions_short, "example_text":current_response.trial.task.instructions_short } 
         
         if current_response.trial.target_field != None:
             target = getattr(current_response.trial.target_sentence, current_response.trial.target_field)

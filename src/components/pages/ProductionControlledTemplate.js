@@ -72,6 +72,7 @@ const ProductionControlledTemplate = (props) => {
     let [incorrect, showIncorrect] = useState(false)
     let sentenceData = ["id","filepath","pitch"]
     let instructionRef = useRef()
+    let exampleRef = useRef()
     let history = useHistory()
 
     const getResponse = () => {
@@ -136,16 +137,18 @@ const ProductionControlledTemplate = (props) => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions});
+            instructionRef.current.textContent = data.text.instructions
+            exampleRef.current.textContent = data.text.example_ref
+        });
     },[]);
 
     return (
             <div>
-                <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                    <Instructions childRef={instructionRef}/>
-                    <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
+                <Instructions childExampleRef={exampleRef} childInstructionRef={instructionRef}/>
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                    </Typography> 
+                </Typography> 
                 </Stack>
                 <Paper className={classes.paper}>
                     

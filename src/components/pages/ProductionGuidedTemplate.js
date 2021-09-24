@@ -82,6 +82,7 @@ const ProductionGuidedTemplate = (props) => {
     let [correct, showCorrect] = useState(false)
     let [incorrect, showIncorrect] = useState(false)
     let instructionRef = useRef()
+    let exampleRef = useRef()
 
     const sentenceData = ["id", "sentence"]
     let history = useHistory()
@@ -192,7 +193,9 @@ const ProductionGuidedTemplate = (props) => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions});
+            instructionRef.current.textContent = data.text.instructions
+            exampleRef ? exampleRef.current.textContent = data.text.example_text : console.log("Undefined element")});
+
     },[]);
 
     useEffect( () => {
@@ -205,12 +208,12 @@ const ProductionGuidedTemplate = (props) => {
 
     return (
             <div>
-                    <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                        <Instructions childRef={instructionRef}/>
-                        <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                        {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                        </Typography> 
-                    </Stack>
+                    <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
+                <Instructions childExampleRef={() => exampleRef} childInstructionRef={instructionRef}/>
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                </Typography> 
+                </Stack>
                         <Paper className={classes.paper}>
                             <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
                                 <Typography marginRight={'50px'} variant="body1" component="h1" gutterBottom>

@@ -53,6 +53,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
     let sentenceData = ["id","filepath","prominent_words"]
     let history = useHistory()
     let instructionRef = useRef()
+    let exampleRef = useRef()
     
 
     
@@ -163,6 +164,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
             const data = response.data
             setTrial(data)
             instructionRef.current.textContent = data.text.instructions
+            exampleRef.current.textContent = data.text.example_text
         });
     },[]);
 
@@ -177,7 +179,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
         <div>
             
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <Instructions childRef={instructionRef}/>
+                <Instructions childExampleRef={exampleRef} childInstructionRef={instructionRef}/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
                 </Typography> 

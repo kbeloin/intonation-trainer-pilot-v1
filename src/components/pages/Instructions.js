@@ -17,13 +17,14 @@ import { withRouter, useHistory } from 'react-router-dom';
 import Icon from '@mui/material/Icon'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import PerceptionIdentificationTonesTemplate from './PerceptionIdentificationTonesTemplate';
 
 const useStyles = makeStyles((theme) => ({
       paper: {
         padding: theme.spacing(2),
         justifyContent: 'center',
         minWidth: '100vw',
-        height: '85vh',
+        height: '40vh',
         display:"flex",
         elevation: 3,
         position: 'relative'
@@ -55,17 +56,22 @@ export const Instructions = (props) => {
                             <Icon>help</Icon>
                         </IconButton>
             <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
         open={open}
         onClick={handleClose}
-      >
+      ><Stack direction="column" spacing={3} justifyContent="center" >
         <Paper className={classes.paper} >
-            <Typography variant="h2" component="h2" gutterBottom ref={props.childRef}>
-
+            <Typography variant="h2" component="h2" gutterBottom ref={props.childInstructionRef}>
+                
             </Typography>
         </Paper>
+    
+        </Stack>
       </Backdrop>
         </div>
     )
 }
+
+
+
 export default Instructions;

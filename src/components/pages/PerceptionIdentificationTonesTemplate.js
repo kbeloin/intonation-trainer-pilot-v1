@@ -18,6 +18,7 @@ import Icon from '@mui/material/Icon'
 import remainingAttempts from '../utils/remainingAttempts'
 import Instructions from './Instructions'
 
+
 const useStyles = makeStyles((theme) => ({
     content: { 
       justifyContent: "center",
@@ -89,23 +90,26 @@ export const PerceptionIdentificationTonesTemplate = () => {
                     };
                 });
             };
-
+            
 
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions})
+            instructionRef.current.textContent = data.text.instructions 
+            
+        
+        })
     },[]);
 
     return (
         <div>
-            <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
-                    <Instructions childRef={instructionRef}/>
-                    <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+            <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
+                <Instructions childInstructionRef={instructionRef}/>
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                    </Typography> 
-                </Stack>
+                </Typography> 
+            </Stack>
         <Paper className={classes.paper}>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
