@@ -134,10 +134,8 @@ const ProductionGuidedTemplate = (props) => {
         // Do something, return true or false. There is no target here. 
         if ( target === undefined ) { // Undefined target means no target set
             return true
+            } return true 
         }
-
-        return true
-    }
 
     // const submitResponse = () => {
     //     if (processedData && value) {
@@ -159,7 +157,6 @@ const ProductionGuidedTemplate = (props) => {
     }
 
     const handleClose = () => {
-        showCorrect(false)
         showIncorrect(false)
     }
 

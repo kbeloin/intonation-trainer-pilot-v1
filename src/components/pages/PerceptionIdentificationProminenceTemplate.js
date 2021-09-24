@@ -42,15 +42,21 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
   
 const PerceptionIdentificationProminenceTemplate = () => {
-    const [correct, showCorrect] = useState(false);
-    const [incorrect, showIncorrect] = useState(false);
-    const [force, showForcedForward] = useState(false)
-    const [trial, setTrial] = useState(null);
-    const [attempts, setAttempts] = useState(0)
-    const sentenceData = ["id","filepath","prominent_words"]
-    const history = useHistory()
-    const instructionRef = useRef()
-    const [words, setWords] = useState([])
+    let [correct, showCorrect] = useState(false);
+    let [incorrect, showIncorrect] = useState(false);
+    let [force, showForcedForward] = useState(false)
+    let [trial, setTrial] = useState(null);
+    let [attempts, setAttempts] = useState(0)
+    let [words, setWords] = useState([])
+    let [submitted, isSubmitted] = useState(null)
+
+    let sentenceData = ["id","filepath","prominent_words"]
+    let history = useHistory()
+    let instructionRef = useRef()
+    
+
+    
+    
 
     const classes = useStyles();
 
@@ -63,58 +69,94 @@ const PerceptionIdentificationProminenceTemplate = () => {
             setTrial(data)});
     }
 
-    const evaluate = () => {
-        const target = new Set
-        words.forEach((e) => target.add(e.value))
-        let trial_target = new Set (trial.sentence.prominent_words.split(','))
+    const Submit = () => {
+        
+        if (Evaluate()) {
+            let request = { "eval": 1, "response": { "prominent_words": words }, "response_id": trial.response_id }
+            
+            submitResponse(request).then(({ nextTaskId, nextType, nextTrialId, nextResponseId }) => {
+                isSubmitted(true)
+            })
+        } else {
+            let request = { "eval": 0, "response": { "prominent_words": words }, "response_id": trial.response_id }
+            
+            submitResponse(request).then((data) => {
+                if (attempts === data.attempts) {
+                    showForcedForward(true)
+                } else {
+                    showIncorrect(true)
+                }
+                isSubmitted(true)
+            })
+        }
+    }
 
+    const Evaluate = () => {
+        setAttempts( attempts + 1 )
+
+        let target = new Set
+
+        words.forEach((e) => target.add(e.value))
+
+        let trial_target = new Set (trial.sentence.prominent_words.split(',')) 
         let a = new Set([...trial_target].filter(x => !target.has(x)));
         let b = new Set([...target].filter(x => !trial_target.has(x)));
+
         console.log(a.size && b.size)
         if (!a.size && !b.size) {
             showCorrect(true)
             console.log(target)
-            let request = { eval: 1, response: target, response_id: trial.response_id }
-            submitResponse(request)
-            setWords([])
-            
-            return
-        }
+            return true;
+        } else {
+            showIncorrect(true)
+            return false;
+            }
+        };
+
 
         
-        let request = { eval: 0, response: target, response_id: trial.response_id }
-        submitResponse(request).then((response)=> {
-            setAttempts( attempts + 1 )
-            const data = response.data;
-            if (attempts === data.attempts) {
-                showForcedForward(true)
-            } else {
-                showIncorrect(true)
-            }
+    //     let request = { eval: 0, response: target, response_id: trial.response_id }
+    //     submitResponse(request).then((response)=> {
+    //         setAttempts( attempts + 1 )
+    //         const data = response.data;
+    //         if (attempts === data.attempts) {
+    //             showForcedForward(true)
+    //         } else {
+    //             showIncorrect(true)
+    //         }
 
-        })
-    }
+    //     })
+    // }
 
-    const nextTrial = () => {
-        let request = ["id"]
+    const Next = () => {
+        let request = sentenceData
         getResponses(request).then((response) => {
                     const data = response.data
                     console.log(data)
                     if (data.task_id != trial.task_id) {
                         console.log("Task completed. Moving to next task")
                         history.push(`/${data.type}`)
-                    }
-                    if (data.trial_id != trial.trial_id) {
+                    } else { if (data.trial_id != trial.trial_id) {
                         console.log("Trial completed. Moving to next trial")
-                        getResponse()
-                    }
-
-                    else {
                         setTrial(data)
+                    } else { if (data.response_id != trial.response_id) {
+                        console.log("Response submitted. Moving to next attempt in trial set.")
+                        setTrial(data)
+                            } else {
+                                console.log("Something went wrong, and task was not refreshed.")
+                            }
+                        }
                     }
-              })
+                })
             }
 
+    const Clean = () => {
+        showCorrect(false)
+        showIncorrect(false)
+        isSubmitted(false)
+        setAttempts(0)
+        setWords([])
+    }
 
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
@@ -123,23 +165,30 @@ const PerceptionIdentificationProminenceTemplate = () => {
             instructionRef.current.textContent = data.text.instructions
         });
     },[]);
+
+    useEffect( () => {
+        if (isSubmitted) {
+            Clean()
+        }
+        return 
+    },[trial]);
 ///Change
     return (
         <div>
             
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <Instructions childRef={instructionRef}/>
-                    <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                    </Typography> 
-                </Stack>
-        <Paper className={classes.paper}>
-        <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
+                </Typography> 
             </Stack>
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
-                <Typography variant="subtitle1" component="h2" gutterBottom>
+            <Paper className={classes.paper}>
+                <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
+                </Stack>
+                <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
+                    <Typography variant="subtitle1" component="h2" gutterBottom>
                       {trial ? trial.text.instructions_short : "Loading..."} 
-                  </Typography>
+                    </Typography>
                 <Player url={trial ? trial.sentence.filepath : null}/>
                 <Box style={{width: "100%"}}>
                     <Collapse in={correct}>
@@ -160,7 +209,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
                     <Collapse in={incorrect}>
                         <Alert
                         action={
-                            <IconButton aria-label="close" color="error" size="small" onClick={() => { getResponse()}}>
+                            <IconButton aria-label="close" color="error" size="small" onClick={() => { Next()}}>
                                 <Icon>close</Icon>
                             </IconButton>
                             }
@@ -185,10 +234,10 @@ const PerceptionIdentificationProminenceTemplate = () => {
                     </Collapse>
                 </Box>
                 <Stack direction="row" spacing={18} xs={12}>
-                    <WordList callback={evaluate} wordList={words} setWordList={setWords} correct={correct} incorrect={incorrect} force={force}/>
+                    <WordList callback={Submit} wordList={words} setWordList={setWords} correct={correct} incorrect={incorrect} force={force}/>
                 </Stack>
             </Stack>
-            <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{nextTrial()}}  disabled={!correct || force }>Next</Button>
+            <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{Next()}}  disabled={!correct && !force}>Next</Button>
         </Paper>
         </div>
     )
