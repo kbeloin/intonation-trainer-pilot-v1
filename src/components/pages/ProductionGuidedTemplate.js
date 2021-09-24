@@ -111,7 +111,7 @@ const ProductionGuidedTemplate = (props) => {
     const Next = () => {
         let request = sentenceData
         getResponses(request).then((response) => {
-            if (respponse.data == 'Done') {
+            if (response.data == 'Done') {
                 history.push('/done')
             }
                     const data = response.data
