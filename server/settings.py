@@ -135,7 +135,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
-
+####
 CORS_ORIGIN_ALLOW_ALL = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
