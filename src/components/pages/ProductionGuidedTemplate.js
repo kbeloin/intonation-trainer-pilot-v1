@@ -193,7 +193,7 @@ const ProductionGuidedTemplate = (props) => {
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
 
-            if (data.type === undefined) {
+            if (response.type === undefined) {
                 history.push('/done')
             } 
             const data = response.data
