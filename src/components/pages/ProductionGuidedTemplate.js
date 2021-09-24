@@ -213,22 +213,24 @@ const ProductionGuidedTemplate = (props) => {
 
     return (
             <div>
+                
+                <Paper className={classes.paper}>
+                <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                     <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <Instructions childExampleRef={() => exampleRef} childInstructionRef={instructionRef}/>
-               
-                </Stack>
-                        <Paper className={classes.paper}>
-                            <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
-                                <Typography marginRight={'50px'} variant="body1" component="h1" gutterBottom>
-                                    {trial ? trial.text.instructions_short : "Loading..."} 
-                                </Typography>
+                <TaskFourInstructions/>
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                </Typography>
+           
+                    </Stack>
+                    <Typography variant="subtitle1" component="h2" gutterBottom>
+                      {trial ? trial.text.instructions_short : "Loading..."} 
+                    </Typography>
                                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}spacing={5}>
                                         <Item>{trial ? trial.sentence.sentence : "Loading..."} </Item>      
                                     <Stack direction="row" justifyContent="center" alignItems="center" spacing={5} xs={6}>
                                   
-                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-            </Typography>
+                
                                         <Stack direction="column">
                                         {isLoading ? 
                                         <Paper id="response-data-container" className={classes.chart} style={{display:"flex", alignContent: "center", alignContent:"center"}}>
@@ -283,7 +285,7 @@ const ProductionGuidedTemplate = (props) => {
                         severity="error"
                         sx={{ mb: 2 }}
                         >
-                        Try again! Remember to listen to the tone choice at the <u>end</u> of the word.
+                        Try again! Remember to explain your intonation choices.
                         </Alert>
                     </Collapse>
                                     </Box>
@@ -303,7 +305,7 @@ const ProductionGuidedTemplate = (props) => {
 
 export default withRouter(ProductionGuidedTemplate)
 
-export const TaskOneInstructions = () => {
+export const TaskFourInstructions = () => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(true);

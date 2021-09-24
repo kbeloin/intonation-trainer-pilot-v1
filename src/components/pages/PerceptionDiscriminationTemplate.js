@@ -127,6 +127,7 @@ const PerceptionDiscriminationTemplate = () => {
                     }
 
                     else {
+                        getResponse()
                         setTrial(data)
                         setA(data.sentence[0])
                         setB(data.sentence[1])
@@ -140,7 +141,6 @@ const PerceptionDiscriminationTemplate = () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions
             
             console.log(data.sentence[0])
             setA(data.sentence[0])
@@ -153,14 +153,15 @@ const PerceptionDiscriminationTemplate = () => {
 ///Change
     return (
         <div>
+            
+        <Paper className={classes.paper}>
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <TaskThreeInstructions />
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
                 </Typography> 
             </Stack>
-        <Paper className={classes.paper}>
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
                       {trial ? trial.text.instructions_short : "Loading..."} 
                 </Typography>
@@ -190,10 +191,10 @@ const PerceptionDiscriminationTemplate = () => {
                             exclusive
                             onChange={handlePoliteChange}
                             >
-                            <ToggleButton  disabled={correct || incorrect} value={trial ? trial.sentence[0] : -1} aria-label="A" fullWidth={true}>
+                            <ToggleButton   value={trial ? trial.sentence[0] : -1} aria-label="A" fullWidth={true}>
                             Sentence A
                             </ToggleButton>
-                            <ToggleButton  disabled={correct || incorrect} value={trial ? trial.sentence[1] : -1} aria-label="B" fullWidth={true}>
+                            <ToggleButton  value={trial ? trial.sentence[1] : -1} aria-label="B" fullWidth={true}>
                             Sentence B
                             </ToggleButton>   
                         </ToggleButtonGroup>   
@@ -208,10 +209,10 @@ const PerceptionDiscriminationTemplate = () => {
                             exclusive
                             onChange={handleProminentChange}
                             >
-                            <ToggleButton value={trial ? trial.sentence[0] : -1} aria-label="list"  disabled={correct || incorrect}>
+                            <ToggleButton value={trial ? trial.sentence[0] : -1} aria-label="list" >
                             Sentence A
                             </ToggleButton>
-                            <ToggleButton value={trial ? trial.sentence[1] : -1} aria-label="quilt" disabled={correct || incorrect}>
+                            <ToggleButton value={trial ? trial.sentence[1] : -1} aria-label="quilt">
                             Sentence B
                             </ToggleButton>   
                         </ToggleButtonGroup>   
@@ -249,7 +250,7 @@ const PerceptionDiscriminationTemplate = () => {
                         </Alert>
                     </Collapse>
                 </Box>
-                <Button size="medium"variant="contained" onClick={() =>{evaluate()}}  disabled={(!polite || !prominent) || (correct || incorrect)} >Submit</Button>
+                <Button size="medium"variant="contained" onClick={() =>{evaluate()}}>Submit</Button>
             </Stack>
             <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{nextTrial()}}  disabled={!correct}>Next</Button>
         </Paper>

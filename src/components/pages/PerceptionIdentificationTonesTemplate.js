@@ -105,16 +105,18 @@ export const PerceptionIdentificationTonesTemplate = () => {
 
     return (
         <div>
-            <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <TaskOneInstructions/>
-           
-            </Stack>
+            
         <Paper className={classes.paper}>
   
+              
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
+            <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
+                <TaskOneInstructions/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
                 </Typography>
-            <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
+           
+            </Stack>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
                       {!trial ? "Loading..." : trial.text.instructions_short} 
                   </Typography>
