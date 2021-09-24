@@ -18,6 +18,8 @@ import WordList from '../elements/WordList';
 import Icon from '@mui/material/Icon'
 import Instructions from './Instructions';
 import remainingAttempts from '../utils/remainingAttempts';
+import { maxWidth } from '@mui/system';
+import Backdrop from '@mui/material/Backdrop';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -82,7 +84,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
             let request = { "eval": 0, "response": { "prominent_words": words }, "response_id": trial.response_id }
             
             submitResponse(request).then((data) => {
-                if (attempts === data.attempts) {
+                if (attempts === trial.attempts) {
                     showForcedForward(true)
                 } else {
                     showIncorrect(true)
@@ -156,7 +158,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
         showIncorrect(false)
         isSubmitted(false)
         setAttempts(0)
-        setWords([])
+        
     }
 
     useEffect( () => {
@@ -179,13 +181,17 @@ const PerceptionIdentificationProminenceTemplate = () => {
         <div>
             
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <Instructions childExampleRef={exampleRef} childInstructionRef={instructionRef}/>
+                <TaskTwoInstructions/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
                 </Typography> 
             </Stack>
             <Paper className={classes.paper}>
                 <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={5}>
+                
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                </Typography>
                 </Stack>
                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                     <Typography variant="subtitle1" component="h2" gutterBottom>
@@ -244,5 +250,55 @@ const PerceptionIdentificationProminenceTemplate = () => {
         </div>
     )
 }
+
+
 export default withRouter(PerceptionIdentificationProminenceTemplate);
 
+
+export const TaskTwoInstructions = () => {
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(true);
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const handleToggle = () => {
+      setOpen(!open);
+    };
+    
+    return (
+        <div>
+            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                            <Icon>help</Icon>
+                        </IconButton>
+            <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <Paper style={{maxWidth:"1100px", display:"flex-box"}}>
+        <Box>
+                <Stack direction="column">
+                
+                <Stack direction="row">
+                    Task 2. Listening.
+                    
+                    </Stack>
+                    <Stack direction="row">
+                    In this task, you will listen to requests spoken with different intonation.
+                    </Stack>
+                    <Stack direction="row">
+                    For each request, you will identify the prominent words.
+                    </Stack>
+                    <Stack direction="row">
+                    Prominent words are those words that are stressed in a sentence. They are usually louder and a bit longer than the other words.
+                    </Stack>
+                    </Stack>
+                </Box>
+            </Paper>
+      </Backdrop>
+        </div>
+    )
+}

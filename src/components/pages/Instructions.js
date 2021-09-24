@@ -15,7 +15,8 @@ import Collapse from '@mui/material/Collapse';
 import { getResponses, submitResponse } from '../utils/responseHelper';
 import { withRouter, useHistory } from 'react-router-dom';
 import Icon from '@mui/material/Icon'
-import Backdrop from '@mui/material/Backdrop';
+import Backdrop from '@mui/material/Backdrop'
+
 import CircularProgress from '@mui/material/CircularProgress';
 import PerceptionIdentificationTonesTemplate from './PerceptionIdentificationTonesTemplate';
 
@@ -59,14 +60,26 @@ export const Instructions = (props) => {
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
         open={open}
         onClick={handleClose}
-      ><Stack direction="column" spacing={3} justifyContent="center" >
-        <Paper className={classes.paper} >
-            <Typography variant="h2" component="h2" gutterBottom ref={props.childInstructionRef}>
-                
-            </Typography>
-        </Paper>
-    
-        </Stack>
+      >
+        <Paper style={{maxWidth:"1100px", margins:"10px"}}>
+                <Stack direction="column">
+                    <Stack direction="row">
+                    <Typography>
+                Task 1. Listening. 
+                    </Typography>
+                    </Stack>
+                <Stack direction="row">
+                <Typography>
+                    In this task, you will listen to requests spoken with different intonations.{"\n"} For each request, you will identify the tone choice AT THE END of the sentence, where the request is happening.
+                    {"\n"}
+                    In English, there are three general types of intonation.{"\n"}
+                <b>Falling</b> = the voice at the end of the request goes down.{"\n"}
+                <b>Rising</b> = the voice at the end of the request goes down.{"\n"}
+                <b>Level</b> = the voice does not go up or down.{"\n"}
+                </Typography>
+                </Stack>
+                </Stack>
+            </Paper>
       </Backdrop>
         </div>
     )

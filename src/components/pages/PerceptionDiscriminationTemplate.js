@@ -20,6 +20,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Instructions from './Instructions';
 import remainingAttempts from '../utils/remainingAttempts';
+import Backdrop from '@mui/material/Backdrop';
 
 const useStyles = makeStyles((theme) => ({
     content: { 
@@ -140,7 +141,7 @@ const PerceptionDiscriminationTemplate = () => {
             const data = response.data
             setTrial(data)
             instructionRef.current.textContent = data.text.instructions
-            exampleRef.current.textContent = data.text.example_text
+            
             console.log(data.sentence[0])
             setA(data.sentence[0])
             setB(data.sentence[1])
@@ -153,7 +154,7 @@ const PerceptionDiscriminationTemplate = () => {
     return (
         <div>
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <Instructions childExampleRef={exampleRef} childInstructionRef={instructionRef}/>
+                <TaskThreeInstructions />
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
                     {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
                 </Typography> 
@@ -190,7 +191,7 @@ const PerceptionDiscriminationTemplate = () => {
                             onChange={handlePoliteChange}
                             >
                             <ToggleButton  disabled={correct || incorrect} value={trial ? trial.sentence[0] : -1} aria-label="A" fullWidth={true}>
-                            Sentence A`
+                            Sentence A
                             </ToggleButton>
                             <ToggleButton  disabled={correct || incorrect} value={trial ? trial.sentence[1] : -1} aria-label="B" fullWidth={true}>
                             Sentence B
@@ -244,7 +245,7 @@ const PerceptionDiscriminationTemplate = () => {
                         severity="error"
                         sx={{ mb: 2 }}
                         >
-                        Not Quite! Remember to listen to the tone choice at the <u>end</u> of the word.
+                        Not Quite!.
                         </Alert>
                     </Collapse>
                 </Box>
@@ -256,3 +257,55 @@ const PerceptionDiscriminationTemplate = () => {
     )
 }
 export default withRouter(PerceptionDiscriminationTemplate);
+
+export const TaskThreeInstructions = () => {
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(true);
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const handleToggle = () => {
+      setOpen(!open);
+    };
+    
+    return (
+        <div>
+            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                            <Icon>help</Icon>
+                        </IconButton>
+            <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <Paper style={{maxWidth:"1100px"}}>
+        <Box>
+                <Stack direction="column">
+                
+                <Stack direction="row">
+                Task 3. Listening.
+                    
+                    </Stack>
+                    <Stack direction="row">
+                    In this task, you will listen to pairs of sentences. Sentences in each pair will have the same words but different intonation. You will be asked to choose the sentence that has a more natural and polite tone choice (rising, falling, or level) and a more natural and appropriate prominence (stressed words).                    </Stack>
+                    <Stack direction="row">
+                    Intonation and politeness.
+                    </Stack>
+                    <Stack direction="row">
+                    <b>Tone choices</b> 
+                    In English, falling tone choices are considered more appropriate and polite.
+                    Rising and level tone choices are less polite and are usually not used to make requests to professors, teachers, bosses, advisors, etc.
+
+                    <b>Prominence</b>
+                    In English, only the words that are important for the request are stressed in a sentence. In general, only 2-3 contextually important words are normally prominent in a sentence.
+                    </Stack>
+                    </Stack>
+                </Box>
+            </Paper>
+      </Backdrop>
+        </div>
+    )
+}

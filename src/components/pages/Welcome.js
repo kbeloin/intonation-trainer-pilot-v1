@@ -118,6 +118,13 @@ const Welcome = (props) => {
                   <Typography variant="h1" component="h2" gutterBottom>
                       Welcome
                   </Typography>
+                  <Typography variant="h1" component="h" gutterBottom>
+                    Welcome to the study investigating English intonation and learning. Before starting, please observe the following requirements:
+                    <Stack direction="column" xs={4}> 
+                    1. Wear a headset with microphone (or make sure your computer has a microphone.
+                    2. Please open the experiement in Google Chrome. 
+                    </Stack>
+                  </Typography>
                   
               </Grid>
             </Grid>

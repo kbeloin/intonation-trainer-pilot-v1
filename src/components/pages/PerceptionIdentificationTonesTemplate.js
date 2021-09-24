@@ -17,6 +17,7 @@ import { withRouter, useHistory } from 'react-router-dom';
 import Icon from '@mui/material/Icon'
 import remainingAttempts from '../utils/remainingAttempts'
 import Instructions from './Instructions'
+import Backdrop from '@mui/material/Backdrop'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -105,12 +106,14 @@ export const PerceptionIdentificationTonesTemplate = () => {
     return (
         <div>
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
-                <Instructions childInstructionRef={instructionRef}/>
-                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                </Typography> 
+                <TaskOneInstructions/>
+           
             </Stack>
         <Paper className={classes.paper}>
+  
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                </Typography>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={5}>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
                       {!trial ? "Loading..." : trial.text.instructions_short} 
@@ -163,4 +166,60 @@ export const PerceptionIdentificationTonesTemplate = () => {
         </div>
     )
 }
+
+
+
 export default withRouter(PerceptionIdentificationTonesTemplate);
+
+
+export const TaskOneInstructions = () => {
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(true);
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const handleToggle = () => {
+      setOpen(!open);
+    };
+    
+    return (
+        <div>
+            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                            <Icon>help</Icon>
+                        </IconButton>
+            <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <Paper style={{maxWidth:"1100px"}}>
+        <Box>
+                <Stack direction="column">
+                
+                <Stack direction="row">
+                    Task 1. Listening.
+                    
+                    </Stack>
+                    <Stack direction="row">
+                    In this task, you will listen to requests spoken with different intonations. For each request, you will identify the tone choice AT THE END of the sentence, where the request is happening.
+                    </Stack>
+                    <Stack direction="row">
+                    In English, there are three general types of intonation.
+                    </Stack>
+                    <Stack direction="row">
+                    <b>Falling</b> = the voice at the end of the request goes down.
+                    <b>Rising</b> = the voice at the end of the request goes down.
+                    <b>Level</b> = the voice does not go up or down.
+                    </Stack>
+                    </Stack>
+                </Box>
+            </Paper>
+      </Backdrop>
+        </div>
+    )
+}
+
+

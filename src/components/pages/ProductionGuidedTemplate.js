@@ -22,6 +22,7 @@ import Collapse from '@mui/material/Collapse';
 import Icon from '@mui/material/Icon'
 import Instructions from "./Instructions"
 import remainingAttempts from '../utils/remainingAttempts';
+import Backdrop from '@mui/material/Backdrop';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -191,6 +192,10 @@ const ProductionGuidedTemplate = (props) => {
     
     useEffect( () => {
         getResponses(sentenceData).then((response) => {
+
+            if (data.type === undefined) {
+                history.push('/done')
+            } 
             const data = response.data
             setTrial(data)
             instructionRef.current.textContent = data.text.instructions
@@ -210,9 +215,7 @@ const ProductionGuidedTemplate = (props) => {
             <div>
                     <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <Instructions childExampleRef={() => exampleRef} childInstructionRef={instructionRef}/>
-                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
-                </Typography> 
+               
                 </Stack>
                         <Paper className={classes.paper}>
                             <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
@@ -222,6 +225,10 @@ const ProductionGuidedTemplate = (props) => {
                                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}spacing={5}>
                                         <Item>{trial ? trial.sentence.sentence : "Loading..."} </Item>      
                                     <Stack direction="row" justifyContent="center" alignItems="center" spacing={5} xs={6}>
+                                  
+                <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
+                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+            </Typography>
                                         <Stack direction="column">
                                         {isLoading ? 
                                         <Paper id="response-data-container" className={classes.chart} style={{display:"flex", alignContent: "center", alignContent:"center"}}>
@@ -296,3 +303,61 @@ const ProductionGuidedTemplate = (props) => {
 
 export default withRouter(ProductionGuidedTemplate)
 
+export const TaskOneInstructions = () => {
+    const classes = useStyles();
+
+    const [open, setOpen] = useState(true);
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const handleToggle = () => {
+      setOpen(!open);
+    };
+    
+    return (
+        <div>
+            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                            <Icon>help</Icon>
+                        </IconButton>
+            <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <Paper style={{maxWidth:"1100px"}}>
+        <Box>
+                <Stack direction="column">
+                
+                <Stack direction="row">
+                Task 5. Speaking.
+                    
+                    </Stack>
+                    <Stack direction="row">
+                    In this last task, you will record yourself saying requests, paying attention to the tone choices and prominence.                    </Stack>
+                    <Stack direction="row">
+                    Repeat the sentence you see below. Remember to pay attention to your tone choices at the end of the sentence and your prominence (stressed words).
+
+                    </Stack>
+                    <Stack direction="row">
+                    <b>Tone choices: </b>
+                    Remember that falling intonation is more polite and appropriate at the end of a request to a professor or an advisor.
+                    
+                    <b>Prominence</b> 
+                    Remember to only stress contextually important words in the sentence (2-3 words maximum).
+
+                    </Stack>
+                    <Stack direction="row">
+                    
+                    </Stack>
+                    <Stack direction="row">
+                   
+                    </Stack>
+                    </Stack>
+                </Box>
+            </Paper>
+      </Backdrop>
+        </div>
+    )
+}

@@ -17,7 +17,7 @@ export default function App() {
       <div className="App">
         <MemoryRouter>
           <Switch>
-            <Route exact path="/" component={Welcome} />
+            <Route exact path="/" component={PerceptionDiscriminationTemplate} />
             <Route exact path="/perception-identification-tones" component={PerceptionIdentificationTonesTemplate} />
             <Route exact path="/perception-discrimination" component={PerceptionDiscriminationTemplate} />
             <Route exact path="/perception-identification-prominence" component={PerceptionIdentificationProminenceTemplate} />
