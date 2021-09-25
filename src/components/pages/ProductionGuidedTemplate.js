@@ -222,7 +222,7 @@ const ProductionGuidedTemplate = (props) => {
                     <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <TaskFourInstructions/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    {trial ?  "Question ID: " + trial.trial_id + " | Attempt: " + remainingAttempts(trial.response_id) + " of 3" : null }
                 </Typography>
            
                     </Stack>
@@ -331,7 +331,7 @@ export const TaskFourInstructions = () => {
         open={open}
         onClick={handleClose}
       >
-        <Paper style={{maxWidth:"1100px"}}>
+        <Paper style={{maxWidth:"1100px", padding:"3%"}}>
         <Box>
                 <Stack direction="column">
                 

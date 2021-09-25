@@ -2,8 +2,6 @@ import React, {useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
 import Player from '../elements/Player';
 import Button from '@material-ui/core/Button'
@@ -14,11 +12,9 @@ import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import { getResponses, submitResponse } from '../utils/responseHelper';
 import { withRouter, useHistory } from 'react-router-dom';
-import WordList from '../elements/WordList';
 import Icon from '@mui/material/Icon'
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import Instructions from './Instructions';
 import remainingAttempts from '../utils/remainingAttempts';
 import Backdrop from '@mui/material/Backdrop';
 
@@ -131,7 +127,6 @@ const PerceptionDiscriminationTemplate = () => {
                         setTrial(data)
                         setA(data.sentence[0])
                         setB(data.sentence[1])
-
                     }
               })
             }
@@ -141,12 +136,9 @@ const PerceptionDiscriminationTemplate = () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            
-            console.log(data.sentence[0])
+
             setA(data.sentence[0])
             setB(data.sentence[1])
-
-           
         });
 
     },[]);
@@ -159,7 +151,7 @@ const PerceptionDiscriminationTemplate = () => {
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <TaskThreeInstructions />
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    {trial ?  "Question ID: " + trial.trial_id + " | Attempt: " + remainingAttempts(trial.response_id) + " of 3" : null }
                 </Typography> 
             </Stack>
                 <Typography variant="subtitle1" component="h2" gutterBottom>
@@ -246,7 +238,7 @@ const PerceptionDiscriminationTemplate = () => {
                         severity="error"
                         sx={{ mb: 2 }}
                         >
-                        Not Quite!.
+                        Not Quite!
                         </Alert>
                     </Collapse>
                 </Box>

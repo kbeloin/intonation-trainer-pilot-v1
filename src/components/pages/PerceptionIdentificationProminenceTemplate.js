@@ -73,17 +73,20 @@ const PerceptionIdentificationProminenceTemplate = () => {
     }
 
     const Submit = () => {
-        
-        if (Evaluate()) {
+        const isCorrect = Evaluate()
+        if (isCorrect) {
             let request = { "eval": 1, "response": { "prominent_words": words }, "response_id": trial.response_id }
-            
+            console.log("Correct response registered.")
             submitResponse(request).then(({ nextTaskId, nextType, nextTrialId, nextResponseId }) => {
                 isSubmitted(true)
             })
         } else {
+            console.log("Incorrect response registered.")
             let request = { "eval": 0, "response": { "prominent_words": words }, "response_id": trial.response_id }
             
             submitResponse(request).then((data) => {
+                console.log("Attempts: ", attempts)
+                console.log("Attempts: ", trial.attempts)
                 if (attempts === trial.attempts) {
                     showForcedForward(true)
                 } else {
@@ -141,6 +144,8 @@ const PerceptionIdentificationProminenceTemplate = () => {
                         history.push(`/${data.type}`)
                     } else { if (data.trial_id != trial.trial_id) {
                         console.log("Trial completed. Moving to next trial")
+                        
+                        setWords([])
                         setTrial(data)
                     } else { if (data.response_id != trial.response_id) {
                         console.log("Response submitted. Moving to next attempt in trial set.")
@@ -165,8 +170,6 @@ const PerceptionIdentificationProminenceTemplate = () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions
-            exampleRef.current.textContent = data.text.example_text
         });
     },[]);
 
@@ -186,7 +189,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
                     <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <TaskTwoInstructions/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    {trial ?  "Question ID: " + trial.trial_id + " | Attempt: " + remainingAttempts(trial.response_id) + " of 3" : null }
                 </Typography>
            
                     </Stack>

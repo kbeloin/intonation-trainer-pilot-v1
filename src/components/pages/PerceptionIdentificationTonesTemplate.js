@@ -78,7 +78,6 @@ export const PerceptionIdentificationTonesTemplate = () => {
         let request = ["id"]
         getResponses(request).then((response) => {
                     const data = response.data
-                    console.log(data)
                     if (data.task_id != trial.task_id) {
                         console.log("Task completed. Moving to next task")
                         history.push(`/${data.type}`)
@@ -97,8 +96,6 @@ export const PerceptionIdentificationTonesTemplate = () => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions 
-            
         
         })
     },[]);
@@ -113,7 +110,7 @@ export const PerceptionIdentificationTonesTemplate = () => {
             <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <TaskOneInstructions/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    {trial ?  "Question ID: " + trial.trial_id + " | Attempt: " + remainingAttempts(trial.response_id) + " of 3" : null }
                 </Typography>
            
             </Stack>

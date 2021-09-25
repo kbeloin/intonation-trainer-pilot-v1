@@ -137,8 +137,6 @@ const ProductionControlledTemplate = (props) => {
         getResponses(sentenceData).then((response) => {
             const data = response.data
             setTrial(data)
-            instructionRef.current.textContent = data.text.instructions
-            exampleRef.current.textContent = data.text.example_ref
         });
     },[]);
 
@@ -147,7 +145,7 @@ const ProductionControlledTemplate = (props) => {
                 <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                 <Instructions childExampleRef={exampleRef} childInstructionRef={instructionRef}/>
                 <Typography alignSelf={'flex-start'} marginRight={'50px'} variant='body1' component="h2" gutterBottom xs={3}>
-                    {trial ?  "Question: " + trial.trial_id + " | Attempts: " + remainingAttempts(trial.response_id) : null }
+                    {trial ?  "Question ID: " + trial.trial_id + " | Attempt: " + remainingAttempts(trial.response_id) + " of 3"  : null }
                 </Typography> 
                 </Stack>
                 <Paper className={classes.paper}>
