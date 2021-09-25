@@ -173,6 +173,7 @@ const PerceptionDiscriminationTemplate = () => {
                             <Player url={sentenceB ? sentenceB.filepath : null}/>
                         </Stack>
                         </Stack>
+                        <Stack direction="row" justifyContent="flex-start" alignItems="baseline" alignContent="center" spacing={5}>
                         <Stack direction="column" justifyContent="center" alignItems="center" spacing={3}>
                         <Typography style={{marginRight:"20px", marginLeft:'20px'}} variant="subtitle1" component="h2" gutterBottom>
                                             More Polite?
@@ -209,6 +210,8 @@ const PerceptionDiscriminationTemplate = () => {
                             </ToggleButton>   
                         </ToggleButtonGroup>   
                     </Stack>
+                    <Button size="medium"variant="contained" onClick={() =>{evaluate()}}>Submit</Button>
+                    </Stack>
                             
                  
                 </Stack>
@@ -242,7 +245,6 @@ const PerceptionDiscriminationTemplate = () => {
                         </Alert>
                     </Collapse>
                 </Box>
-                <Button size="medium"variant="contained" onClick={() =>{evaluate()}}>Submit</Button>
             </Stack>
             <Button size="large"variant="contained" style={{alignSelf:"flex-end"}} onClick={() =>{nextTrial()}}  disabled={!correct}>Next</Button>
         </Paper>
