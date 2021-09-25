@@ -111,11 +111,11 @@ const ProductionGuidedTemplate = (props) => {
     const Next = () => {
         let request = sentenceData
         getResponses(request).then((response) => {
-            if (response.data == 'Done') {
-                history.push('/done')
-            }
                     const data = response.data
                     console.log(data)
+                    if (data === 'Done') {
+                        history.push('/done')
+                    }
                     if (data.task_id != trial.task_id) {
                         console.log("Task completed. Moving to next task")
                         history.push(`/${data.type}`)

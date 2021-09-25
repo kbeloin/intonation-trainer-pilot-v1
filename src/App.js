@@ -23,7 +23,7 @@ export default function App() {
             <Route exact path="/perception-identification-prominence" component={PerceptionIdentificationProminenceTemplate} />
             <Route path="/production-controlled" component={ProductionControlledTemplate} />
             <Route path="/production-guided" component={ProductionGuidedTemplate} />
-            <Route exact path="/done" component={End} />
+            <Route path="/done" component={End} />
           </Switch>
         </MemoryRouter>
       </div>
