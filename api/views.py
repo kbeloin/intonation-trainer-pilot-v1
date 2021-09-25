@@ -152,7 +152,7 @@ class GetResponseSet(APIView):
 
         if len(responses.filter(complete=False)) == 0:
             print('Hello from creation2')
-            return HttpResponse('Done')
+            return HttpResponse(json.dumps({"type":'done'}))
 
         if current_response == None:
             print('Hello from creation3')
