@@ -323,46 +323,48 @@ export const TaskFourInstructions = () => {
     
     return (
         <div>
-            <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
-                            <Icon>help</Icon>
-                        </IconButton>
-            <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
-        open={open}
-        onClick={handleClose}
-      >
-        <Paper style={{maxWidth:"1100px", padding:"3%"}}>
-        <Box>
-                <Stack direction="column">
-                
-                <Stack direction="row">
-                Task 5. Speaking.
-                    
-                    </Stack>
-                    <Stack direction="row">
-                    In this last task, you will record yourself saying requests, paying attention to the tone choices and prominence.                    </Stack>
-                    <Stack direction="row">
-                    Repeat the sentence you see below. Remember to pay attention to your tone choices at the end of the sentence and your prominence (stressed words).
-
-                    </Stack>
-                    <Stack direction="row">
-                    <b>Tone choices: </b>
-                    Remember that falling intonation is more polite and appropriate at the end of a request to a professor or an advisor.
-                    
-                    <b>Prominence</b> 
-                    Remember to only stress contextually important words in the sentence (2-3 words maximum).
-
-                    </Stack>
-                    <Stack direction="row">
-                    
-                    </Stack>
-                    <Stack direction="row">
-                   
-                    </Stack>
-                    </Stack>
-                </Box>
-            </Paper>
-      </Backdrop>
+                <IconButton aria-label="close" color="info" size="small" onClick={() => handleToggle()}>
+                    <Icon>help</Icon>
+                </IconButton>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 2 }}
+                    open={open}
+                    onClick={handleClose}
+                >
+                <Paper style={{maxWidth:"1100px", padding:"3%"}} justifyContent='center'
+                minWidth='95vw'
+                height= '50vh'
+                display='flex'
+                elevation={3}
+                position='relative'
+                >
+                    <Box>
+                        <Stack direction="column">
+                            <Stack direction="row">
+                            Task 4. Speaking.<br /><br />
+                            </Stack>
+                            <Stack direction="row"><br />
+                            In this last task, you will record yourself saying requests, paying attention to the tone choices and prominence.                    </Stack>
+                            <Stack direction="row"><br />
+                            Repeat the sentence you see below. Remember to pay attention to your tone choices at the end of the sentence and your prominence (stressed words).
+                            <br /><br />
+                            </Stack>
+                            <Stack direction="row">
+                                <Stack direction="column">
+                                <b>Tone choices: </b><br />
+                                Remember that falling intonation is more polite and appropriate at<br /> 
+                                the end of a request to a professor or an advisor.
+                                <br />
+                                </Stack>
+                                <Stack direction="column">
+                                <b>Prominence:</b> <br />
+                                Remember to only stress contextually important words in the sentence (2-3 words maximum).
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Paper>
+            </Backdrop>
         </div>
     )
 }

@@ -276,31 +276,42 @@ export const TaskThreeInstructions = () => {
         open={open}
         onClick={handleClose}
       >
-        <Paper style={{maxWidth:"1100px"}}>
-        <Box>
-                <Stack direction="column">
-                
-                <Stack direction="row">
-                Task 3. Listening.
-                    
-                    </Stack>
-                    <Stack direction="row">
-                    In this task, you will listen to pairs of sentences. Sentences in each pair will have the same words but different intonation. You will be asked to choose the sentence that has a more natural and polite tone choice (rising, falling, or level) and a more natural and appropriate prominence (stressed words).                    </Stack>
-                    <Stack direction="row">
-                    Intonation and politeness.
-                    </Stack>
-                    <Stack direction="row">
-                    <b>Tone choices</b> 
-                    In English, falling tone choices are considered more appropriate and polite.
-                    Rising and level tone choices are less polite and are usually not used to make requests to professors, teachers, bosses, advisors, etc.
+                <Paper style={{maxWidth:"1100px", padding:"3%"}} justifyContent='center'
+                minWidth='95vw'
+                height= '50vh'
+                display='flex'
+                elevation={3}
+                position='relative'
+                >
+                    <Box>
+                        <Stack direction="column">
+                        
+                            <Stack direction="row">
+                            Task 3. Listening. <br /><br />
+                                
+                            </Stack>
+                            <Stack direction="row"><br />
+                            In this task, you will listen to pairs of sentences. Sentences in each pair will have the same words but different intonation. You will be asked to choose the sentence that has a more natural and polite tone choice (rising, falling, or level) and a more natural and appropriate prominence (stressed words).                    </Stack>
+                            <Stack direction="row"><br />
+                            Intonation and politeness.
+                            </Stack>
+                            <Stack direction="row"><br /><br />
+                                <Stack direction="column">
+                                <b>Tone choices</b><br />
+                                In English, falling tone choices are considered more appropriate and polite.<br />
+                                Rising and level tone choices are less polite and are usually not used to make requests to professors, teachers, bosses, advisors, etc.<br /><br />
+                                </Stack>
 
-                    <b>Prominence</b>
-                    In English, only the words that are important for the request are stressed in a sentence. In general, only 2-3 contextually important words are normally prominent in a sentence.
-                    </Stack>
-                    </Stack>
-                </Box>
-            </Paper>
-      </Backdrop>
+                                <Stack direction="column">
+                                <b>Prominence</b><br />
+                                In English, only the words that are important for the request are stressed in a sentence. <br /> 
+                                In general, only 2-3 contextually important words are normally prominent in a sentence.<br /><br />
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                </Paper>
+            </Backdrop>
         </div>
     )
 }

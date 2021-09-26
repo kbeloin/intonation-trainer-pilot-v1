@@ -53,9 +53,12 @@ class UserResponseFilter(admin.SimpleListFilter):
 
 @admin.register(UserResponse)
 class UserResponseAdmin(admin.ModelAdmin):
-    list_display = ("user", "response", "trial")
+    list_display = ("user", "response_short", "trial")
     actions = ["export_as_csv"]
     list_filter = (UserResponseFilter,)
+
+    def response_short(self, obj):
+        return str(obj.response)[:25]
 
     def export_as_csv(self, request, queryset):
         meta = self.model._meta

@@ -116,17 +116,17 @@ const Welcome = (props) => {
             <Grid container direction="column" justifyContent="flex-end" alignItems="center" >
               <Grid  item xs={12}>
                   <Typography variant="subtitle1" component="h2" gutterBottom>
-                      Welcome
+                      Welcome<br />
                   </Typography>
-                  <Typography variant="subtitle1" component="h2" gutterBottom>
+                  <Typography variant="subtitle1" component="h2" gutterBottom><br />
                     Welcome to the study investigating English intonation and learning. Before starting, please observe the following requirements:
-                    <Stack direction="column" xs={4}> 
+                    <Stack direction="column" xs={4}> <br />
                     1. Wear a headset with microphone (or make sure your computer has a microphone).
                     </Stack>
-                    <Stack direction="column" xs={4}> 
+                    <Stack direction="column" xs={4}> <br />
                     2. Please open the experiement in Google Chrome. 
                     </Stack>
-                    <Stack direction="column" xs={4}> 
+                    <Stack direction="column" xs={4}> <br />
                     3. You will have three attempts per question; once this number of attempts has been reached, the program will automatically progress.
                     </Stack>
                   </Typography> 

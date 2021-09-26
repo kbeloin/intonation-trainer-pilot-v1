@@ -277,22 +277,28 @@ export const TaskTwoInstructions = () => {
         open={open}
         onClick={handleClose}
       >
-        <Paper style={{maxWidth:"1100px", display:"flex-box"}}>
+        <Paper style={{maxWidth:"1100px", padding:"3%"}} justifyContent='center'
+        minWidth='95vw'
+        height= '50vh'
+        display='flex'
+        elevation={3}
+        position='relative'
+        >
         <Box>
                 <Stack direction="column">
                 
                 <Stack direction="row">
-                    Task 2. Listening.
-                    
+                    Task 2: Listening
+                    <br /><br />
                     </Stack>
-                    <Stack direction="row">
+                    <Stack direction="row"><br />
                     In this task, you will listen to requests spoken with different intonation.
-                    </Stack>
-                    <Stack direction="row">
+                    </Stack><br />
+                    <Stack direction="row"><br />
                     For each request, you will identify the prominent words.
-                    </Stack>
+                    </Stack><br />
                     <Stack direction="row">
-                    Prominent words are those words that are stressed in a sentence. They are usually louder and a bit longer than the other words.
+                    Prominent words are those words that are stressed in a sentence. They are usually <b>louder</b> and a <b>bit longer</b> than the other words.
                     </Stack>
                     </Stack>
                 </Box>

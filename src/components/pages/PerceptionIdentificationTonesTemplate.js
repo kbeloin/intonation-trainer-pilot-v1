@@ -194,24 +194,30 @@ export const TaskOneInstructions = () => {
         open={open}
         onClick={handleClose}
       >
-        <Paper style={{maxWidth:"1100px"}}>
+        <Paper style={{maxWidth:"1100px", padding:"3%"}} justifyContent='center'
+        minWidth='95vw'
+        height= '50vh'
+        display='flex'
+        elevation={3}
+        position='relative'
+        >
         <Box>
                 <Stack direction="column">
                 
                 <Stack direction="row">
-                    Task 1. Listening.
+                    Task 1. Listening.<br />
                     
                     </Stack>
-                    <Stack direction="row">
-                    In this task, you will listen to requests spoken with different intonations. For each request, you will identify the tone choice AT THE END of the sentence, where the request is happening.
-                    </Stack>
-                    <Stack direction="row">
+                    <Stack direction="row"><br />
+                    In this task, you will listen to requests spoken with different intonations.<br /><br />For each request, you will identify the tone choice AT THE END of the sentence, where the request is happening.
+                    </Stack><br />
+                    <Stack direction="row"><br />
                     In English, there are three general types of intonation.
-                    </Stack>
+                    </Stack><br /><br />
                     <Stack direction="row">
-                    <b>Falling</b> = the voice at the end of the request goes down.
-                    <b>Rising</b> = the voice at the end of the request goes down.
-                    <b>Level</b> = the voice does not go up or down.
+                    <b>Falling</b> = the voice at the end of the request goes down.<br />
+                    <b>Rising</b> = the voice at the end of the request goes down.<br />
+                    <b>Level</b> = the voice does not go up or down.<br />
                     </Stack>
                     </Stack>
                 </Box>
