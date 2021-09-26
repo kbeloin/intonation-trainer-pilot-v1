@@ -11,7 +11,7 @@ class Experiment(models.Model):
     code = models.CharField(default='ABCDEF',  max_length=255, unique=True)
     
     def _str_(self):
-        return self.title
+        return f'{self.title}'
 
 class Sentence(models.Model):
     filepath = models.URLField(null=True)
@@ -49,6 +49,8 @@ class UserResponse(models.Model):
     completed = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     is_correct = models.BooleanField(null=True, blank=True)
     response = models.JSONField(null=True)
+
+    
 
 class Action(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
