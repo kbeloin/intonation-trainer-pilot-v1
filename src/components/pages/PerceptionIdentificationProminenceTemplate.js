@@ -133,7 +133,8 @@ const PerceptionIdentificationProminenceTemplate = () => {
                         history.push(`/${data.type}`)
                     } else { if (data.trial_id != trial.trial_id) {
                         console.log("Trial completed. Moving to next trial")
-                        setAttempts(0)
+                        
+                        setAttempts(1)
                         setWords([])
                         setTrial(data)
                     } else { if (data.response_id != trial.response_id) {
@@ -150,6 +151,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
     const Clean = () => {
         showCorrect(false)
         showIncorrect(false)
+        showForcedForward(false)
         isSubmitted(false)
     }
 
