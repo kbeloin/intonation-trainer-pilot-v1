@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react";
 
-
-
 var options = {
   audioBitsPerSecond: 16000
 }
-
 
 const ctx = new AudioContext();
 const reader = new FileReader();
 
 const useRecorder = () => {
-const [audioURL, setAudioURL] = useState("");
-const [isRecording, setIsRecording] = useState(false);
-const [recorder, setRecorder] = useState(null);
-const [rawData, setRawData] = useState(null)
+  const [audioURL, setAudioURL] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [recorder, setRecorder] = useState(null);
+  const [rawData, setRawData] = useState(null)
   
-
   useEffect(() => {
     // Lazily obtain recorder first time we're recording.
     if (recorder === null) {
@@ -69,6 +65,7 @@ async function requestRecorder() {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   return new MediaRecorder(stream, options);
 }
+
 export default useRecorder;
 
 

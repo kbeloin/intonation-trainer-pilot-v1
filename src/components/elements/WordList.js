@@ -1,9 +1,7 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import { WorkRounded } from '@material-ui/icons';
-import { SliderTrack } from '@mui/material';
 import Icon from '@mui/material/Icon';
 import Button from '@material-ui/core/Button';
 import TextField from '@mui/material/TextField';
@@ -19,7 +17,6 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
     }));
 
-
 export const WordList = ({callback, wordList, setWordList, correct, incorrect, force}) => {
     
     const [word, setWord] = useState('')
@@ -29,7 +26,7 @@ export const WordList = ({callback, wordList, setWordList, correct, incorrect, f
     }
 
     function handleAdd() {
-        const newList = wordList.concat({ value: word.toLowerCase(), id: v4() })
+        const newList = wordList.concat({ value: word.toLowerCase(), id: v4()})
         setWordList(newList)
         setWord('');
     }
@@ -38,9 +35,6 @@ export const WordList = ({callback, wordList, setWordList, correct, incorrect, f
         const newList = wordList.filter((item) => item.id !== id)
         setWordList(newList)
     }
-
-
-
 
     return (
         <Stack direction="column" spacing={1}>
@@ -65,8 +59,8 @@ export const WordList = ({callback, wordList, setWordList, correct, incorrect, f
                         <IconButton aria-label="close" color="info" size="small" onClick={() => handleRemove(item.id)}>
                             <Icon>close</Icon>
                         </IconButton>
-                    </Item>
-                    )})}
+                        </Item>
+                        )})}
                 </Stack>
         </Stack>
        

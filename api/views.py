@@ -14,7 +14,7 @@ import os           # add this
 from rest_framework.decorators import api_view,parser_classes
 import json
 from .parsers import AudioParser
-from .tools import audio_utils, custom_audio_convert, b2_util
+from .tools import audio_utils, custom_audio_convert
 import time
 import boto3
 from botocore.exceptions import ClientError
@@ -85,6 +85,7 @@ class ProcessAudio(APIView):
             return HttpResponse(data)
 
 class NewResponseSet(APIView):
+    '''This function will need to be deprecated.'''
     model = UserResponse
     create_field = None
     queryset = Task.objects.all() 

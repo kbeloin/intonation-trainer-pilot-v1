@@ -5,6 +5,8 @@ Functions
 ---------
 `read`: Return the sample rate (in samples/sec) and data from a WAV file.
 `write`: Write a NumPy array as a WAV file.
+
+CODE SPLUT FROM SCIKITLEARN
 """
 import io
 import sys

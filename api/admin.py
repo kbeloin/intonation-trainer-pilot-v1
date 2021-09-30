@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.http import HttpResponse
+import json
 import csv
 from .models import Action, Experiment,UserResponse,Task,Sentence,Trial
 
@@ -61,11 +62,13 @@ class UserResponseAdmin(admin.ModelAdmin):
         return str(obj.response)[:25]
 
     def export_as_csv(self, request, queryset):
+        '''Cookbook Django example'''
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
 
         response = HttpResponse(content_type = 'text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+
         writer = csv.writer(response)
 
         writer.writerow(field_names)
@@ -73,26 +76,5 @@ class UserResponseAdmin(admin.ModelAdmin):
             row = writer.writerow([getattr(obj, field) for field in field_names])
 
         return response
-
+        
     export_as_csv.short_description = "Export Selected"
-
-class UserResponseFilter(admin.SimpleListFilter):
-    '''
-    TimonWeb: https://timonweb.com/django/adding-custom-filters-to-django-admin-is-easy/
-    '''
-    title = "Completed Responses"
-    parameter_name = 'response'
-
-    def lookups(seld, request, model_admin):
-
-        return [
-            ("nulled_responses", "Empty Responses"),
-            ("non_nulled_responses","Filled Responses")
-        ]
-
-    def queryset(self, request, queryset):
-
-        if self.value() == "non_nulled_responses":
-            return queryset.filter(response__isnull=False)
-        if self.value():
-            return queryset.filter(response__isnull=True)

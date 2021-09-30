@@ -48,7 +48,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
     let [incorrect, showIncorrect] = useState(false);
     let [force, showForcedForward] = useState(false)
     let [trial, setTrial] = useState(null);
-    let [attempts, setAttempts] = useState(0)
+    let [attempts, setAttempts] = useState(1)
     let [words, setWords] = useState([])
     let [submitted, isSubmitted] = useState(null)
 
@@ -75,6 +75,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
     const Submit = () => {
         const isCorrect = Evaluate()
         if (isCorrect) {
+            showCorrect(true)
             let request = { "eval": 1, "response": { "prominent_words": words }, "response_id": trial.response_id }
             console.log("Correct response registered.")
             submitResponse(request).then(({ nextTaskId, nextType, nextTrialId, nextResponseId }) => {
@@ -98,41 +99,29 @@ const PerceptionIdentificationProminenceTemplate = () => {
     }
 
     const Evaluate = () => {
-        setAttempts( attempts + 1 )
+        const attempt = attempts + 1
+        setAttempts(attempt)
+        
 
         let target = new Set
 
         words.forEach((e) => target.add(e.value))
 
         let trial_target = new Set (trial.sentence.prominent_words.split(',')) 
-        let a = new Set([...trial_target].filter(x => !target.has(x)));
-        let b = new Set([...target].filter(x => !trial_target.has(x)));
+        // Use set operations to determine overlap. 
+        let a = new Set([...trial_target].filter(x => !target.has(x))); // Check if there are some the user missed
+        let b = new Set([...target].filter(x => !trial_target.has(x))); // Check if there are some words included that are not part of the target
 
-        console.log(a.size && b.size)
+        console.log(a.size && b.size) 
+
+        console.log(b)
+        console.log(a)
         if (!a.size && !b.size) {
-            showCorrect(true)
-            console.log(target)
             return true;
         } else {
-            showIncorrect(true)
             return false;
             }
         };
-
-
-        
-    //     let request = { eval: 0, response: target, response_id: trial.response_id }
-    //     submitResponse(request).then((response)=> {
-    //         setAttempts( attempts + 1 )
-    //         const data = response.data;
-    //         if (attempts === data.attempts) {
-    //             showForcedForward(true)
-    //         } else {
-    //             showIncorrect(true)
-    //         }
-
-    //     })
-    // }
 
     const Next = () => {
         let request = sentenceData
@@ -144,7 +133,7 @@ const PerceptionIdentificationProminenceTemplate = () => {
                         history.push(`/${data.type}`)
                     } else { if (data.trial_id != trial.trial_id) {
                         console.log("Trial completed. Moving to next trial")
-                        
+                        setAttempts(0)
                         setWords([])
                         setTrial(data)
                     } else { if (data.response_id != trial.response_id) {
@@ -162,8 +151,6 @@ const PerceptionIdentificationProminenceTemplate = () => {
         showCorrect(false)
         showIncorrect(false)
         isSubmitted(false)
-        setAttempts(0)
-        
     }
 
     useEffect( () => {
@@ -298,7 +285,7 @@ export const TaskTwoInstructions = () => {
                     For each request, you will identify the prominent words.
                     </Stack><br />
                     <Stack direction="row">
-                    Prominent words are those words that are stressed in a sentence. They are usually <b>louder</b> and a <b>bit longer</b> than the other words.
+                    Prominent words are those words that are stressed in a sentence. They are usually louder and a bit longer than the other words.
                     </Stack>
                     </Stack>
                 </Box>

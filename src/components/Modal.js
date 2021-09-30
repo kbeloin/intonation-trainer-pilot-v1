@@ -12,12 +12,14 @@ import {
 } from "reactstrap";
 
 export default class CustomModal extends Component {
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			activeItem: this.props.activeItem
 		};
 	}
+
 	handleChange = e => {
 		let { name, value } = e.target;
 		if (e.target.type === "checkbox") {
