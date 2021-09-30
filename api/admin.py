@@ -54,7 +54,7 @@ class UserResponseFilter(admin.SimpleListFilter):
 
 @admin.register(UserResponse)
 class UserResponseAdmin(admin.ModelAdmin):
-    list_display = ("user", "response_short", "trial")
+    list_display = ("user", "user_id", "response_short", "trial")
     actions = ["export_as_csv"]
     list_filter = (UserResponseFilter,)
 
@@ -76,5 +76,28 @@ class UserResponseAdmin(admin.ModelAdmin):
             row = writer.writerow([getattr(obj, field) for field in field_names])
 
         return response
+
+    # def export_pitch_data(self, request, queryset):
+    #     '''Cookbook Django example'''
+
+    #     def process_pitch_data(obj):
+    #         '''Expects pitch json of {x_y: [{x, y}, {x, y}] }
+    #         Returns: [ (x ...) (y ...) ]
+    #         '''
+    #         pass
+
+    #     meta = self.model._meta
+    #     field_names = [field.name for field in meta.fields]
+
+    #     response = HttpResponse(content_type = 'text/csv')
+    #     response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+
+    #     writer = csv.writer(response)
+
+    #     writer.writerow(field_names)
+    #     for obj in queryset:
+    #         row = writer.writerow([getattr(obj, field) for field in field_names])
+
+    #     return response
         
     export_as_csv.short_description = "Export Selected"
